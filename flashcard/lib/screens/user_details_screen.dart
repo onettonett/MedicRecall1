@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashcard_x/screens/sign_in_screen.dart';
-import 'package:flashcard_x/widgets/drawer_widget.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
+import 'package:flashcard_x/widgets/app_bar_title.dart';
 import 'package:flashcard_x/utils/authentication.dart';
-// import 'package:flashcard_x/widgets/design_main.dart';
 import 'package:flutter/material.dart';
 
 class UserDetailsPage extends StatefulWidget {
-  const UserDetailsPage({Key? key}) : super(key: key);
+  const UserDetailsPage({super.key});
 
   @override
   State<UserDetailsPage> createState() => UserDetailsPageState();
@@ -21,7 +21,7 @@ class UserDetailsPageState extends State<UserDetailsPage> {
   bool isEnabled = false;
   final TextEditingController _controller = TextEditingController(text: "user");
 
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference users = FirebaseWrapper.firestore().collection('users');
 
   // final GlobalKey<ScaffoldState> _key = GlobalKey();
 
@@ -33,40 +33,8 @@ class UserDetailsPageState extends State<UserDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: const DrawMain(),
-        appBar: AppBar(
-            // title: const Text("User Details"),
-            title: Align(
-              alignment: const Alignment(-0.06, 0),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 2.3,
-                    child: Image.asset(
-                      'assets/newlogo.png',
-                      fit: BoxFit.cover,
-                      height: 34,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 32),
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text("User Details"),
-                  ),
-                ],
-              ),
-            ),
-            // titleTextStyle: const TextStyle(
-            //     fontSize: 30, fontWeight: FontWeight.bold),
-            centerTitle: true,
-            leading: Builder(
-                builder: (context) => GestureDetector(
-                      onTap: () => Scaffold.of(context).openDrawer(),
-                      child: const Icon(
-                        Icons.menu,
-                      ),
-                    ))),
+    return AppScaffold(
+        title: "User Details",
         body: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -178,7 +146,7 @@ class UserDetailsPageState extends State<UserDetailsPage> {
 
     var userDocID = querySnapshot.docs.first.id;
 
-    CollectionReference flashcardsSeen = FirebaseFirestore.instance
+    CollectionReference flashcardsSeen = FirebaseWrapper.firestore()
         .collection("users/$userDocID/flashcardsSeen");
 
     QuerySnapshot flashcardsSeenSnapshot = await flashcardsSeen.get();
@@ -188,7 +156,7 @@ class UserDetailsPageState extends State<UserDetailsPage> {
     }
 
     CollectionReference events =
-    FirebaseFirestore.instance.collection("users/$userDocID/events");
+    FirebaseWrapper.firestore().collection("users/$userDocID/events");
 
     QuerySnapshot eventsSnapshot = await events.get();
 

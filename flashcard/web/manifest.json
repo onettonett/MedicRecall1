@@ -1,6 +1,6 @@
 {
-    "name": "flashcard_x",
-    "short_name": "flashcard_x",
+    "name": "flashcard",
+    "short_name": "flashcard",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

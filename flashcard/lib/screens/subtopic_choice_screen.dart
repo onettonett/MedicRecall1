@@ -1,15 +1,14 @@
 // choose the study type for the feedscreen
 
 import 'package:flashcard_x/utils/page_transition.dart';
-import 'package:flashcard_x/widgets/design_main.dart';
+import 'package:flashcard_x/widgets/app_bar_title.dart';
 import 'package:flutter/material.dart';
 
 import 'feed_screen.dart';
 
 class SubtopicChoice extends StatefulWidget {
   const SubtopicChoice(
-      {Key? key, required this.flashcardSet, required this.subtopics})
-      : super(key: key);
+      {super.key, required this.flashcardSet, required this.subtopics});
   final String flashcardSet;
   final List<String> subtopics;
 
@@ -113,8 +112,8 @@ class _SubtopicChoiceState extends State<SubtopicChoice> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: DesignMain.appBarMain("Choice", context),
+    return AppScaffold(
+        title: "Choice",
         body: SingleChildScrollView(
             child: Column(children: [
               Container(
@@ -130,6 +129,7 @@ class _SubtopicChoiceState extends State<SubtopicChoice> {
                 "No subtopics available to choose",
                 style: TextStyle(
                   fontSize: 14,
+                  color: Color.fromRGBO(0x30, 0x30, 0x30, 1) 
                 ),
               )),
             SizedBox(

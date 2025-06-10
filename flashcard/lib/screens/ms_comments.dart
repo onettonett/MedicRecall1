@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashcard_x/screens/sign_in_screen.dart';
-import 'package:flashcard_x/widgets/design_main.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
+import 'package:flashcard_x/widgets/app_bar_title.dart';
 import 'package:flutter/material.dart';
 
 // just need to make sure that id isnt the one for the card, instead for the mark scheme
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 class MsComments extends StatefulWidget {
   final String msID;
 
-  const MsComments({Key? key, required this.msID}) : super(key: key);
+  const MsComments({super.key, required this.msID});
 
   @override
   MsCommentsE createState() => MsCommentsE();
@@ -24,7 +25,7 @@ class MsCommentsE extends State<MsComments> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   final CollectionReference usersRef =
-      FirebaseFirestore.instance.collection("users");
+      FirebaseWrapper.firestore().collection("users");
 
   List<Map<String, dynamic>> users = [];
 
@@ -82,7 +83,7 @@ class MsCommentsE extends State<MsComments> {
     commentText = TextEditingController();
     // need a reference to the singular mark scheme's comments, need to get its ID
     // this is given by msID, passed into this class my ms_single
-    flashcardCommentsRef = FirebaseFirestore.instance
+    flashcardCommentsRef = FirebaseWrapper.firestore()
         .collection("markscheme/${widget.msID}/comments");
     super.initState();
   }
@@ -108,10 +109,10 @@ class MsCommentsE extends State<MsComments> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppScaffold(
         resizeToAvoidBottomInset: true,
-        appBar: DesignMain.appBarMain("Comments", context),
-
+        title: "Comments",
+        showBack: true,
         body: Stack(
           children: [
             Center(

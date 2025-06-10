@@ -7,7 +7,7 @@ import '../utils/authentication.dart';
 import '../utils/string_validation.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key});
 
   @override
   State<ForgotPassword> createState() => _ForgotPassword();
@@ -39,7 +39,7 @@ class _ForgotPassword extends State<ForgotPassword> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/newlogo.png',
+              'assets/app_logo4.png',
               // this file doesn't exist and generates error
               height: 130,
             ),
@@ -185,23 +185,35 @@ class _ForgotPassword extends State<ForgotPassword> {
       }
 
       if(e.message == "The email address is badly formatted.") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
-            content: 'Invalid email address format',
-          ),
-        );
+        Future.delayed(Duration.zero, () {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content: 'Invalid email address format',
+              ),
+            );
+          }
+        });
       } else if (e.message == "There is no user record corresponding to this identifier. The user may have been deleted.") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
-            content: 'Account not found',
-          ),
-        );
+        Future.delayed(Duration.zero, () {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content: 'Account not found',
+              ),
+            );
+          }
+        });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
-            content: '${e.message}',
-          ),
-        );
+        Future.delayed(Duration.zero, () {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content: '${e.message}',
+              ),
+            );
+          }
+        });
       }
     }
   }

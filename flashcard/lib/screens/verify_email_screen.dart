@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashcard_x/screens/dash_screen.dart';
 import 'package:flashcard_x/screens/sign_in_screen.dart';
 import 'package:flashcard_x/utils/authentication.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'landing_screen.dart';
-
 class VerifyEmailScreen extends StatefulWidget {
   static String id = 'verifyEmail';
 
-  const VerifyEmailScreen({Key? key}) : super(key: key);
+  const VerifyEmailScreen({super.key});
 
   @override
   State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -32,6 +31,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     } catch(e) {
       Future.delayed(Duration.zero, ()
       {
+        if (!mounted) return;
         Navigator.of(context).pop();
         Navigator.of(context).push(
             MaterialPageRoute(
@@ -71,7 +71,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   //If the email has been verified you are directed to landing screen else you just stay on the page until you verify it.
   @override
   Widget build(BuildContext context) => isEmailVerified
-      ? const Landing()
+      ? const Dashboard()
       :  Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -84,7 +84,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/newlogo.png',
+                'assets/app_logo4.png',
                 //need to update logo to new one
                 height: 130,
               ),

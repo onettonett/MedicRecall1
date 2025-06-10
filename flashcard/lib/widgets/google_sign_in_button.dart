@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashcard_x/screens/dash_screen.dart';
 import 'package:flashcard_x/utils/authentication.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/landing_screen.dart';
-
 class GoogleSignInButton extends StatefulWidget {
-  const GoogleSignInButton({Key? key}) : super(key: key);
+  const GoogleSignInButton({super.key});
 
   @override
   State<GoogleSignInButton> createState() => _GoogleSignInButtonState();
@@ -42,7 +41,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
                     if (user != null) {
                       //Navigator.pushReplacementNamed(context, HomePage.id);
-                      navigator.pushReplacementNamed(Landing.id);
+                      navigator.pushReplacementNamed(Dashboard.id);
                       // pushReplacementNamed(context, Landing.id);
                     }
                   },

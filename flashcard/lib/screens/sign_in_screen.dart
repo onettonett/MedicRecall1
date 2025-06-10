@@ -8,7 +8,7 @@ import 'package:flashcard_x/screens/reset_password_screen.dart';
 class SignInScreen extends StatefulWidget {
   static String id = 'login';
 
-  const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => SignInScreenState();
@@ -33,6 +33,8 @@ class SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Row(
@@ -43,13 +45,16 @@ class SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/newlogo.png',
+                'assets/app_logo4.png',
                 // this file doesn't exist and generates error
                 height: 130,
               ),
               const SizedBox(height: 20),
-              const Text("MedicRecall",
-                  style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
+              Text("MedicRecall",
+                  style: theme.textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                  )),
               const SizedBox(height: 20),
               FutureBuilder(
                 future: Authentication.initializeFirebase(context: context),
@@ -74,26 +79,35 @@ class SignInScreenState extends State<SignInScreen> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ForgotPassword()));
                 },
-                child: const Text(
+                child: Text(
                   "Forgot Password?",
-                  style:
-                  TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? Click here to ",
-                      style: TextStyle(fontSize: 19)),
+                  Text(
+                      "Don't have an account? Click here to ",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontSize: 19,
+                        color: Colors.white
+                      )
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushReplacementNamed(context, SignUpScreen.id);
                     },
-                    child: const Text(
+                    child: Text(
                       "Sign Up",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                      ),
                     ),
                   ),
                 ],

@@ -1,10 +1,12 @@
 import 'dart:core';
 
-import 'package:flashcard_x/widgets/drawer_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
+import 'package:flashcard_x/widgets/app_bar_title.dart';
 import 'package:flutter/material.dart';
 
-import 'dashboard_screen.dart';
 import 'ms_questions.dart';
+import 'ms_single.dart';
 
 
 // first we define our mark scheme info class - DONE
@@ -32,211 +34,256 @@ class MSInfo {
   }
 }
 
-class UMS extends StatelessWidget {
-  const UMS({Key? key}) : super(key: key);
+class UMS extends StatefulWidget {
+  const UMS({super.key});
 
-/*
-Have the first place be an explanation of the mark scheme, leave blank for rn
+  @override
+  UMSState createState() => UMSState();
+}
 
-3 buttons:
-  - Rating (q1-114)
-  - Multiple choice (q1-20)
-  - Ranking (q1-37)
+class UMSState extends State<UMS> {
+  List<Map<String, dynamic>> allQuestions = [];
+  List<int> multipleChoiceQuestions = [];
+  List<int> rankingQuestions = [];
 
- for each type of question
- - Answer to the question
- - Explanation of the answer
- - Comment section
- - situation
- - action
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await fetchQuestions("multiple choice", multipleChoiceQuestions);
+      await fetchQuestions("ranking", rankingQuestions);
+      setState(() {});
+    });
+  }
 
- */
+  Future<void> fetchQuestions(String questionType, List<int> targetList) async {
+    if (allQuestions.isEmpty) {
+      CollectionReference typeRef = FirebaseWrapper.firestore().collection("markscheme");
+      QuerySnapshot typeSnapshot = await typeRef.get();
+
+      for (var doc in typeSnapshot.docs) {
+        var question = doc.data() as Map<String, dynamic>;
+        var fullNum = question["question"].toString();
+
+        question["question"] =
+            fullNum.toString().substring(1, fullNum.indexOf('/', 1));
+        question["id"] = doc.reference.id;
+        allQuestions.add(question);
+      }
+      allQuestions.sort(questionComparison);
+    }
+
+    for (var i = 0; i < allQuestions.length; i++) {
+      if (allQuestions[i]["type"] == questionType) {
+        targetList.add(i);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const DrawMain(),
-      appBar: AppBar(
-        // backgroundColor: Colors.blue,
-          elevation: 0,
-          title: Align(
-            alignment: const Alignment(-0.05,0),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 2.3,
-                  child: Image.asset(
-                    'assets/newlogo.png',
-                    fit: BoxFit.cover,
-                    height: 34,
+    return AppScaffold(
+        title: "Mark Scheme",
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(50, 16, 50, 16),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ExpandablePanel(
+                    title: "Multiple Choice Questions (Question 1-${multipleChoiceQuestions.length})",
+                    children: QuestionGrid(
+                      questions: multipleChoiceQuestions,
+                      allQuestions: allQuestions,
+                      startingNumber: 0,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 32),
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text('Unofficial Mark Scheme',
+                  SizedBox(height: 16),
+                  ExpandablePanel(
+                    title: "Ranking Questions (Question ${multipleChoiceQuestions.length+1}-${multipleChoiceQuestions.length+rankingQuestions.length})",
+                    children: QuestionGrid(
+                      questions: rankingQuestions,
+                      allQuestions: allQuestions,
+                      startingNumber: multipleChoiceQuestions.length,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          centerTitle: true,
-          leading: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () => Scaffold.of(context).openDrawer(),
-                child: const Icon(
-                  Icons.menu,
-                ),
-              )),
-    ),
-      body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: const [
-                              SizedBox(
-                                height: 20,
-                              )
-                            ],
-                          ),
-                          Container(
-                              width: double.infinity,
-                              height: 200,
-                              margin: const EdgeInsets.only(
-                                  bottom: 10.0, left: 30.0, right: 30.0),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30.0, vertical: 10.0),
-                              decoration: BoxDecoration(
-                                color: Colors.blueGrey,
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: const Center(
-                                  child: SingleChildScrollView(
-                                    // allow for scrolling if its a long question
-                                    child: Center(
-                                        child: Text(
-
-                                            "This is our exclusive unofficial mark scheme for the Pearson Vue past paper which was released by the UKFPO but removed from view in 2023 when the Situational Judgement Test was scrapped. Approximately half of the questions overlap with the UKFPO sample paper, which was released with official rationales. Therefore, the official rationales are provided where available, and for the remaining questions, our unofficial mark scheme is used. \n Disclaimer: Our unofficial mark scheme is less reliable than the official content. Therefore, use the unofficial rationales as a basis for reflection and discussion. There is a comments section where users can debate rationales for answering questions and engage with our community.",
-                                            //get the question from the map
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                            ))),
-                                  ))),
-                          const SizedBox(height: 40),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                              disabledForegroundColor: Colors.grey,
-                              side: const BorderSide(color: Colors.green, width: 2),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(100))),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MSI(
-                                        qtype: "rating",
-                                      )));
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                              child: Text('Rating Questions (Q1 - 114)',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w500)),
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                              disabledForegroundColor: Colors.grey,
-                              side: const BorderSide(color: Colors.green, width: 2),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(100))),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MSI(
-                                        qtype: "multiple choice",
-                                      )));
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                              child: Text('Multiple Choice Questions (Q1 - 20)',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w500)),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                              disabledForegroundColor: Colors.grey,
-                              side: const BorderSide(color: Colors.green, width: 2),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(100))),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MSI(
-                                        qtype: "ranking",
-                                      )));
-                            },
-                            key: const ValueKey('Rating Questions'),
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                              child: Text('Ranking Questions (Q1 - 37)',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w500)),
-                            ),
-                          ),
-                        ],
-                      ))),
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  disabledForegroundColor: Colors.grey,
-                  side: const BorderSide(color: Colors.green, width: 2),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(100))),
-                ),
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, HomePage.id),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Text('Flashcards',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 34,
-                          fontWeight: FontWeight.w500)),
-                ),
-              )
-            ],
-          )),
+        )
     );
   }
 }
+
+class ExpandablePanel extends StatefulWidget {
+  final String title;
+  final Widget children;
+
+  const ExpandablePanel({
+    super.key,
+    required this.title,
+    required this.children,
+  });
+
+  @override
+  ExpandablePanelState createState() => ExpandablePanelState();
+}
+
+class ExpandablePanelState extends State<ExpandablePanel>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  bool isExpanded = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+    if (isExpanded) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _togglePanel() {
+    setState(() {
+      isExpanded = !isExpanded;
+      if (isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GestureDetector(
+            onTap: _togglePanel,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              color: Colors.blue[300],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    isExpanded ? Icons.remove : Icons.add,
+                    color: Colors.black,
+                  ),
+                  const Spacer(),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w600),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ),
+          ClipRect(
+            child: SizeTransition(
+              sizeFactor: _animation,
+              axisAlignment: -1.0,
+              child: widget.children,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuestionGrid extends StatelessWidget {
+  final List<int> questions;
+  final List<Map<String, dynamic>> allQuestions;
+  final int startingNumber;
+
+  const QuestionGrid({
+    super.key,
+    required this.questions,
+    required this.allQuestions,
+    required this.startingNumber
+  });
+
+  MSInfo makeMSInfo(int questionIndex, int index) {
+    final foundQuestion = allQuestions[questionIndex];
+    final answer = foundQuestion['answer'];
+    final explanation = foundQuestion['explanation'];
+    final type = foundQuestion['type'];
+    final id = foundQuestion['id'];
+    final situation = foundQuestion['situation'];
+    final action = foundQuestion['action'];
+    final bool = foundQuestion['bool'];//official or unofficial
+    return MSInfo((index + 1).toString(), answer, explanation, type, id,situation,action,bool);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      color: Colors.blue.shade100,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 10,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 2,
+        ),
+        itemCount: questions.length,
+        itemBuilder: (context, index) {
+          var question = questions[index];
+          var questionNumber = startingNumber+int.parse(allQuestions[question]["question"]);
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MSSingle(
+                    msiSingle: makeMSInfo(questions[index], index),
+                    allQuestions: allQuestions,
+                    typeQuestions: questions,
+                    currentIndex: index,
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Center(
+                child: Text('Q${questionNumber.toString()}', style: TextStyle(color: Colors.black)),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+

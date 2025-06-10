@@ -11,11 +11,11 @@ class RegistrationForm extends StatefulWidget {
   final FocusNode passwordFocusNode;
 
   const RegistrationForm({
-    Key? key,
+    super.key,
     required this.nameFocusNode,
     required this.emailFocusNode,
     required this.passwordFocusNode,
-  }) : super(key: key);
+  });
 
   @override
   State<RegistrationForm> createState() => _RegistrationFormState();
@@ -41,6 +41,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
   @override
   Widget build(BuildContext context) {
     NavigatorState navigator = Navigator.of(context);
+    final theme = Theme.of(context);
+
     return Form(
       key: _formkey,
       child: Column(
@@ -56,7 +58,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               validator: (value) => StringValidation.validateName(
                 name: value,
               ),
-              cursorColor: Colors.black,
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
@@ -64,19 +65,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   Icons.person,
                 ),
                 hintText: 'Enter Name',
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                      // color: Colors.blue,
-                      ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    // color: Colors.lightBlueAccent,
-                    width: 2.0,
-                  ),
-                ),
               ),
             ),
           ),
@@ -91,7 +79,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               validator: (value) => StringValidation.validateEmail(
                 email: value,
               ),
-              cursorColor: Colors.black,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
@@ -99,19 +86,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   Icons.email,
                 ),
                 hintText: 'Enter Email',
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                      // color: Colors.blue,
-                      ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    // color: Colors.lightBlueAccent,
-                    width: 2.0,
-                  ),
-                ),
               ),
             ),
           ),
@@ -127,7 +101,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               validator: (value) => StringValidation.validatePassword(
                 password: value,
               ),
-              cursorColor: Colors.black,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
@@ -135,19 +108,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   Icons.visibility_off,
                 ),
                 hintText: 'Enter Password',
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                      // color: Colors.blue,
-                      ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    // color: Colors.lightBlueAccent,
-                    width: 2.0,
-                  ),
-                ),
               ),
             ),
           ),
@@ -165,7 +125,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 }
                 return null;
               },
-              cursorColor: Colors.black,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
@@ -173,17 +132,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   Icons.visibility_off,
                 ),
                 hintText: 'Confirm Password',
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    width: 2.0,
-                  ),
-                ),
               ),
             ),
           ),
@@ -251,15 +199,21 @@ class _RegistrationFormState extends State<RegistrationForm> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account? Click here to ",
-                    style: TextStyle(fontSize: 19)),
+                Text("Already have an account? Click here to ",
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                        fontSize: 19,
+                        color: Colors.white
+                    )),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacementNamed(context, SignInScreen.id);
                   },
-                  child: const Text(
+                  child: Text(
                     "Sign In",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                  ),
                   ),
                 ),
               ],

@@ -53,3 +53,12 @@ app.*.map.json
 Flutter-Generated.xcconfig
 flutter_export_environment.sh
 >>>>>>> 0b5ed149a251057ed5e72d49f04781fc61946ec1
+
+# FVM Version Cache
+.fvm/
+
+# VS code
+.vscode/
+# Stores credentials for the app
+# This file should not be committed to version control as it contains sensitive information.
+lib/utils/credentials.json:1

@@ -1,6 +1,7 @@
 // this is where we decide the order and what cards are shows to the user
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
 
 class Algo {
   bool containsCard(String cardID, List<Map<String, dynamic>> cards) {
@@ -35,11 +36,11 @@ class Algo {
   }
 
   Future<List<Map<String, dynamic>>> getFlashcards(String userID) async {
-    CollectionReference flashcardRef = FirebaseFirestore.instance
+    CollectionReference flashcardRef = FirebaseWrapper.firestore()
         .collection('flashcards'); //get flashcards from firebase
 
     CollectionReference usersRef =
-    FirebaseFirestore.instance.collection('users');
+    FirebaseWrapper.firestore().collection('users');
 
     QuerySnapshot querySnapshot = await usersRef
         .where("userID", isEqualTo: userID)
@@ -47,7 +48,7 @@ class Algo {
 
     var userDocId = querySnapshot.docs.first.id;
 
-    CollectionReference flashcardsSeenRef = FirebaseFirestore.instance
+    CollectionReference flashcardsSeenRef = FirebaseWrapper.firestore()
         .collection("users/$userDocId/flashcardsSeen"); //recognise flashcard as seen
 
     List<Map<String, dynamic>> flashcards = [];
@@ -86,16 +87,16 @@ class Algo {
   Future<List<Map<String, dynamic>>> newCards(
       List<String> subtopics, String userID) async {
     CollectionReference flashcardRef =
-        FirebaseFirestore.instance.collection('flashcards');
+        FirebaseWrapper.firestore().collection('flashcards');
     CollectionReference usersRef =
-        FirebaseFirestore.instance.collection('users');
+        FirebaseWrapper.firestore().collection('users');
 
     QuerySnapshot querySnapshot =
         await usersRef.where("userID", isEqualTo: userID).get();
 
     var userDocId = querySnapshot.docs.first.id;
 
-    CollectionReference flashcardsSeenRef = FirebaseFirestore.instance
+    CollectionReference flashcardsSeenRef = FirebaseWrapper.firestore()
         .collection("users/$userDocId/flashcardsSeen");
 
     List<Map<String, dynamic>> flashcards = [];//yes
@@ -178,7 +179,7 @@ class Algo {
             } else {
               //checks if the card is ready to be revised when over the scoreToDay limit
               if (howLongAgoSeenDays >
-                  scoreToDay[flashcard[scoreToDay.length - 1]]!) {
+                  scoreToDay[flashcard[(scoreToDay.length - 1).toString()]]!) {
                 filteredCards.add(flashcard);
 
               }
@@ -209,7 +210,7 @@ class Algo {
           } else {
             //checks if the card is ready to be revised if over the scoreToDay limit
             if (howLongAgoSeenDays >
-                scoreToDay[flashcard[scoreToDay.length - 1]]!) {
+                scoreToDay[flashcard[(scoreToDay.length - 1).toString()]]!) {
               filteredCards.add(flashcard);
             }
           }

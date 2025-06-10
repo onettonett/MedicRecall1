@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 
 class Resources extends StatelessWidget {
-  const Resources({Key? key}) : super(key: key);
+  const Resources({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class Resources extends StatelessWidget {
                   Positioned(
                     top: 2.3,
                     child: Image.asset(
-                      'assets/newlogo.png',
+                      'assets/app_logo4.png',
                       fit: BoxFit.cover,
                       height: 34,
                     ),

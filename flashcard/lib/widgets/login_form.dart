@@ -12,8 +12,8 @@ class LoginForm extends StatefulWidget {
   const LoginForm({
     required this.emailFocusNode,
     required this.passwordFocusNode,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -53,29 +53,12 @@ class _LoginFormState extends State<LoginForm> {
               validator: (value) => StringValidation.validateEmail(
                 email: value,
               ),
-              cursorColor: Colors.black,
               textInputAction: TextInputAction.next,
-              // keyboardType:
-              //     TextInputType.emailAddress, // special keyboard for email address
               decoration: InputDecoration(
                 prefixIcon: const Icon(
                   Icons.email,
                 ),
-                labelText: 'Email',
-                hintText: 'Enter Email',
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                      // color: Colors.blue,
-                      ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    // color: Colors.lightBlueAccent,
-                    width: 2.0,
-                  ),
-                ),
+                hintText: 'Email',
               ),
             ),
           ),
@@ -92,38 +75,23 @@ class _LoginFormState extends State<LoginForm> {
               validator: (value) => StringValidation.validatePassword(
                 password: value,
               ),
-              cursorColor: Colors.black,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                 prefixIcon: const Icon(
                   Icons.lock,
                 ),
-                labelText: 'Password',
-                hintText: 'Enter Password',
+                hintText: 'Password',
                 suffixIcon: IconButton(
                   icon: Icon(
                     passwordVisible ? Icons.visibility_off : Icons.visibility,
                     color:
-                        Theme.of(context).secondaryHeaderColor.withOpacity(0.8),
+                        Colors.black,
                   ),
                   onPressed: () {
                     setState(() {
                       passwordVisible = !passwordVisible;
                     });
                   },
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                      // color: Colors.blue,
-                      ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    // color: Colors.lightBlueAccent,
-                    width: 2.0,
-                  ),
                 ),
               ),
             ),

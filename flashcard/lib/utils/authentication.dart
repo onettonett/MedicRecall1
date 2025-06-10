@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart'; //IsWeb;
@@ -101,7 +102,7 @@ class Authentication {
     }
 
     CollectionReference collectionRef =
-    FirebaseFirestore.instance.collection('users');
+    FirebaseWrapper.firestore().collection('users');
 
     QuerySnapshot querySnapshot =
     await collectionRef.where("userID", isEqualTo: user?.uid).get();
@@ -179,25 +180,33 @@ class Authentication {
         if (kDebugMode) {
           print('No user found for that email.');
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
-            content: 'No user found for that email. Please create an account.',
-          ),
-        );
+        Future.delayed(Duration.zero, () {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content: 'No user found for that email. Please create an account.',
+              ),
+            );
+          }
+        });
       } else if (e.code == 'wrong-password') {
         if (kDebugMode) {
           print('Wrong password provided.');
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
-            content: 'Wrong password provided.',
-          ),
-        );
+        Future.delayed(Duration.zero, () {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content: 'Wrong password provided.',
+              ),
+            );
+          }
+        });
       }
     }
 
     CollectionReference collectionRef =
-    FirebaseFirestore.instance.collection('users');
+    FirebaseWrapper.firestore().collection('users');
 
     QuerySnapshot querySnapshot =
     await collectionRef.where("userID", isEqualTo: user?.uid).get();
@@ -266,7 +275,7 @@ class Authentication {
     ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
     User? user;
     CollectionReference collectionRef =
-    FirebaseFirestore.instance.collection('users');
+    FirebaseWrapper.firestore().collection('users');
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
@@ -340,12 +349,15 @@ class Authentication {
         if (kDebugMode) {
           print('The password provided is too weak.');
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
-            content: 'The password provided is too weak.',
-          ),
-        );
-
+        Future.delayed(Duration.zero, () {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content: 'The password provided is too weak.',
+              ),
+            );
+          }
+        });
       } else if (e.code == 'email-already-in-use') {
         if (kDebugMode) {
           print('The account already exists for that email.');
@@ -375,11 +387,17 @@ class Authentication {
       }
       await FirebaseAuth.instance.signOut();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        Authentication.customSnackBar(
-          content: 'Error signing out. Try again.',
-        ),
-      );
+      Future.delayed(Duration.zero, ()
+      {
+        if (!context.mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          Authentication.customSnackBar(
+            content: 'Error signing out. Try again.',
+          ),
+        );
+      });
     }
   }
 }

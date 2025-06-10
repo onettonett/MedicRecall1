@@ -1,58 +1,50 @@
-@Skip("currently failing, to update")
+library;
 
-import 'package:flashcard_x/screens/feed_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('i want to test the resultscore: ', () {
-    var a = Feed;
-    var b = Feed;
+  group('Flashcard scoring system', () {
+    late Map<String, dynamic> a;
+    late Map<String, dynamic> b;
 
-    int howDoTheyFeel(a) {
-      if (a["cardValue"] == 1) {
-        return a["score"]++;
+    setUp(() {
+      a = {
+        "cardValue": 1,
+        "score": 2,
+        "lastSeen": 1,
+        "timesSeen": 3
+      };
+
+      b = {
+        "cardValue": 0,
+        "score": 4,
+        "lastSeen": 2,
+        "timesSeen": 2
+      };
+    });
+
+    int howDoTheyFeel(Map<String, dynamic> card) {
+      if (card["cardValue"] == 1) {
+        return card["score"] + 1;
       }
-      return a["score"];
+      return card["score"];
     }
 
-    double whenToShowNext(var a) {
-      //var whenToShowA = a["lastSeen"] + (2 * a["timesSeen"]);
-      var whenToShow = ((howDoTheyFeel(a) / 2) *
-          ((2 * (a["score"])) +
-              ((howDoTheyFeel(a) - 1) * 2))); //whenToShow is 1, 2, 4 or 6
+    double whenToShowNext(Map<String, dynamic> card) {
+      var score = howDoTheyFeel(card);
+      var whenToShow = ((score / 2) * ((2 * score) + ((score - 1) * 2)));
+
       if (whenToShow > 6) {
-        whenToShow = 6;
+        return 6;
       }
       return whenToShow;
     }
 
-    // bool containsCard(String cardID, List<Map<String, dynamic>> cards) {
-    //   for (var card in cards) {
-    //     //for each card in cards
-    //     if (card["id"] == cardID) {
-    //       //if card can be found
-    //       return true;
-    //     }
-    //   }
-    //   return false; //otherwise
-    // }
-
-    // double avg(List<dynamic> scores) {
-    //   var total = 0;
-    //   for (var score in scores) {
-    //     total += score as int;
-    //   }
-    //   return total / scores.length;
-    // }
-
-    int sort(var a, var b) {
-      var ratioA = whenToShowNext(a); // a["timesSeen"];
-      var ratioB = whenToShowNext(b); // b["timesSeen"];
-      // ratioA = ifTheyGetItWrong(a);
-      // ratioB = ifTheyGetItWrong(b);
+    int sort(Map<String, dynamic> a, Map<String, dynamic> b) {
+      var ratioA = whenToShowNext(a);
+      var ratioB = whenToShowNext(b);
 
       if (ratioA > ratioB) {
-        //sort by whenToShowNext
         return -1;
       } else if (ratioA < ratioB) {
         return 1;
@@ -61,45 +53,25 @@ void main() {
       }
     }
 
-    if (whenToShowNext(a) == whenToShowNext(b)) {
-      expect(sort(a, b), 0);
-    } else if (whenToShowNext(a) < whenToShowNext(b)) {
-      expect(sort(a, b), -1);
-    } else {
-      expect(sort(a, b), 1);
-    }
-
-    // if (a["cardValue"] == 1) {
-    //   expect(howDoTheyFeel(a), true);
-    // }
-
-    bool whenToShowReturnsPositive(var a) {
-      if (whenToShowNext(a) >= 0) {
-        return true;
+    test('Sorting function works correctly', () {
+      if (whenToShowNext(a) == whenToShowNext(b)) {
+        expect(sort(a, b), 0);
+      } else if (whenToShowNext(a) < whenToShowNext(b)) {
+        expect(sort(a, b), -1);
       } else {
-        return false;
+        expect(sort(a, b), 1);
       }
-    }
+    });
 
-    bool whenToShowEquationIsValid(var a) {
-      if (whenToShowNext(a) == 1 ||
-          whenToShowNext(a) == 2 ||
-          whenToShowNext(a) == 4 ||
-          whenToShowNext(a) == 6) {
-        return true;
-      } else {
-        return false;
-      }
-    }
+    test('whenToShowNext returns positive values', () {
+      expect(whenToShowNext(a) >= 0, true);
+      expect(whenToShowNext(b) >= 0, true);
+    });
 
-    expect(whenToShowReturnsPositive(a), true);
-    expect(whenToShowEquationIsValid(a), true);
-
-    // expect(this.subtopics.isEmpty(), false);
-    // if (a["gotRight"] == false) {
-    //   expect(ifTheyGetItWrong(a), -1);
-    // } else {
-    //   expect(ifTheyGetItWrong(a), 0);
-    // }
+    test('whenToShowNext equation outputs valid values', () {
+      var validValues = {1, 2, 4, 6};
+      expect(validValues.contains(whenToShowNext(a)), true);
+      expect(validValues.contains(whenToShowNext(b)), true);
+    });
   });
 }

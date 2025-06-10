@@ -1,225 +1,153 @@
 <p align="center">
-<img src="flashcard/assets/newlogo.png" height="150">
-<h1 align="center">2023-MedicRecall</h1>
+<img src="flashcard/assets/app_logo4.png" height="110">
+<h1 align="center">2024-MedicRecall</h1>
+<h4 align="center">xd23197, ar23931, nv22173, rw22740, nv23870</h5>
 
-# Table of Contents
+<!--Use the code above as a header for all MedicRecall pages.-->
 
-* [What do we need to deliver?](#what-do-we-need-to-deliver)
-* [About our client:](#About-our-client)
-* [About Recall:](#About-Recall)
-* [About MSRA:](#About-MSRA)
-* [Existing problems:](#Existing-problems)
-* [Previous Year’s GitHub (2022):](#previous-years-github-2022)
-* [Setting Up:](#Setting-Up)
-* [Running the App：](#Running-the-App)
-* [User Stories：](#User-Stories)
-* [About Firebase:](#About-Firebase)
-* [CI/CD:](#CI/CD)
-* [Ethics](#ethics)
-* [Gantt Chart](#Gantt-Chart)
+## Brief Project Description
+The project’s aim is to provide an all-encompassing platform to help medical students study for the Multi-Speciality Recruitment Assessment (MSRA). By using evidence-based studying principles, such as active recall and spaced repetition, students should expect to spend less time achieving a higher score.
 
+### Contents
+This is a thorough README document so use this to skip to your desired section:
+1. [Brief Project Description](##Brief-Project-Description)
+2. [Why is this important?](###Why-is-this-important?)  
+3. [Stakeholders](##Stakeholders)  
+4. [User stories](##User-stories)
+5. [Ethics Analysis](##Ethics-analysis)  
+6. [User instructions](##User-instructions)  
+6. [Database Diagram](##Database-Diagram)  
+7. [Architecture Diagram](##Architecture-Diagram)  
+8. [Developer Instructions](#Developer-Instructions)  
+9. [Why Firebase?](##Why-Firebase?)  
+10. [Contributors](##Contributors)
 
+### Why is this important?
+The MSRA is crucial for trainees as it decides their speciality and is used to apply for placement: placements are increasingly competitive with only one in four applications being successful. Preparing for this exam is done in parallel with medical students’ other responsibilities: a full-time demanding job, maintaining a competitive portfolio (including research papers), and other exams such as the MRCP. This, combined with the importance of the exam, leads to four in ten doctors reporting burnout.
 
-# What do we need to deliver?
-<br>
-1. Webapp to deliver premade flashcards.<br>
-<br>
-2. Allow people to rate flashcards based on knowledge.<br>
-<br>
-3. Area for peer discussion and collaboration.<br>
-<br>
-4. Test taking functionality with automatic grading.
-<br>
-<br>
+## Stakeholders
+#### Primary users of the platform
+**_Junior doctors_** are the primary users of the platform.
+MedicRecall helps them score highly on the MSRA, which helps them secure highly competitive work placements. Trained doctors may also use the platform to reacquaint themselves with the material. 
 
-# About our client：
-<br>
-- Most trainee doctors are not studying effectively.<br>
-<br>
-- Use active recall, spaced repetition and concept mapping to improve how doctors study.<br>
-<br>
-- PowerPoint that he has - notes.<br>
-<br>
-- He’s a medic with a bit of software dev knowledge.<br>
-<br>
-- “Evidence based revision for medical trainees”.<br>
-<br>
-- Time taken for studying exams is too long.<br>
-<br>
-- Develop a portfolio as a doctor etc.<br>
-<br>
-- There’s a lot to worry about as a medic.<br>
-<br>
-<br>
-<br>
+#### Other stakeholders
+- NHS
+    - MedicRecall trains doctors for the NHS so we must ensure junior doctors are equipped with a comprehensive and in-depth understanding of necessary topics for their work
+    - Teaching false information has detrimental effects so all information that is taught on the platform must be accurate and up to date
+- Legislators (GDPR)
+    - Students’ data is collected so corresponding data and privacy laws must be adhered to:
+        - The use of data should be transparent to customers
+        - Data must not be sent to countries without equivalent data protection laws.
+        - Only necessary data should be stored and shouldn’t be kept for longer than required
+- App Store (Apple App Store, Google Play Store)
+    - Rules of the app store must be adhered to
 
-# About Recall：
-<br>
-i.	Over time, you retain less and less information.<br>
-<br>
+## User stories
 
-ii.	Targeting the MSRA - Multi Specialty Recruitment Assessment<br>
-<br>
+### Sophia
+> "I don't want to waste time thinking about exactly when I should study for the MSRA. The platform should automatically schedule tests for me so I don't have to worry about planning my revision."
+#### How did we address this?
+We added a **study planner feature**. A spaced repitition algorithm automatically decides which topics Sophia should study each day for optimal long term memory, ensuring a maximum of two topics per day. Clicking on the topics in the calendar lets Sophia revise only the most relevant topics easily.
 
-iii.	It’s a very important exam! Determines the course of your medical future.<br>
-<br>
+### Liam
+> "I want a variety of question formats, not just flashcards. I believe exam-style questions are an important revision tool."
+#### How did we address this?
+- We added **full-size mock exams**
+- We added **multiple choice questions**
+- We added the **ability to create your own flashcards**
+    - For instance, Liam might want to articulate a piece of knowledge differently.
+### Noah
+> "I want the platform to feel responsive and fast. The user interface is especially important to me: it should look minimal and it should feel intuitive. I don't want to spend time learning how to use the app, it should be designed such that the way to use it is obvious."
+#### How did we address this?
+- We've completely overhauled the UI of every page in the app, this includes the following:
+    - Dashboard page
+    - Topic selector page
+    - Flashcard review page
+    - Mark scheme page
+    - Mock exam page
+    - Settings page
+    - Sidebar
+    - Loading screen UI
+    - Explanation pages (inc. How does the platform work?, FAQ, Feedback)
+    - **_and more..._**
+- Fixed theming issues and theming inconsistency
+- We've made changes to the poorly designed, inefficient database that we inherited
+- Added a light and dark theme
+- Added a font size selector
 
-iv.	Two parts: Situational Judgement - clinical scenario, ethical dilemma/teamwork/managing situation, then you rank a group of some options from most to least appropriate or choose the three most appropriate options. (People aren’t used to revising for it)<br>
-<br>
+## Ethics Analysis
 
+#### Publically accessible data
+The majority of the data used in MedicRecall is learning material, exam-style questions and past exam papers. This information is publically available and impersonal so there's no consequence to people trying to webscrape for the data as it's not intellectual property of MedicRecall: there's also no incentive as doing this is harder than finding the same data elsewhere.
 
-# About MSRA：
-<br>
-i.	Clinical knowledge, similar to medical school exams. Tests knowledge in 12 specialty areas. Multiple choice.<br>
-<br>
+However, it's notable that if MedicRecall does decide to make it's own practise questions - in addition to publically available questions - then protecting against web scraping becomes more of a priority. 
 
-ii.	There are resources for the Professional dilemmas paper, the GMC has released practice papers. There are GMC booklets too, NOT VERY USEFUL, as too broad.<br>
-<br>
+#### Personal User Data
+The only identifiable data will be progress on the exam questions, names of the users, and emails. Preventing names and emails from being leaked is crucial.
 
-iii.	Clinical problem-solving paper: revise using question banks<br>
-<br>
+#### Database safety considerations
+Currently, we are working with a live site and live database (with active users).
 
-iv.	What already exists: Question bank and mock exam, £60 ，Courses for £100<br>
-<br>
+## User Instructions
+There is plenty of help on the app, in the form of tooltips and help pages, so a junior doctor should be able to quickly discover how to use the app.
 
-v.	Solution - evidence based revision. Idea is to remind oneself periodically<br>
-<br>
+#### How to revise flashcards
+- First, select the **flashcard tutor** page: you can select it from the sidebar or by clicking "Start now" on the "Next Flashcard Deck for review" widget on the homepage. 
+- **Select topics** or refine your learning by selecting individual subtopics - you can pick as many subtopics or topics as you desire. Then, click revise.
+- The timer at the top is the countdown until you are allowed to flip the flashcard. Click to flip the flashcard, then press on the green tick or red cross depending on whether you already knew the answer to the flashcard.encouraging
 
-vi.	We need to complete the pivot from the SJT to the MSRA.<br>
-<br>
+#### How to use the study schedule
+Our spaced repition algorithm calculates when you should revise certain topics based on the previous days that you revised them. It assigns dates to topics of revision based on when you last revised them, ensuring no more than two topics are assigned to any given day. Click on the topics to revise them.
 
-# Existing problems：
-<br>
-i.	Flashcard system could do with some tweaking<br>
-<br>
+#### How to use streaks
+We added streaks as a form of gamification. It automatically compiles data about your studying performance and expresses it to you in a way that's encouraging and quick to view.
 
-ii.	Complete the change from SJT to MSRA.  
+#### How to use mock exams
+Select the appropriate amount of responses, as specified in the question, submit the question. Do this for each question. It's recommended that for any given question, if it's something that you want to revisit, click the 'flag question' button to highlight it for later.
 
-iii.	Flashcards don’t auto update to green after finishing a set, you have to manually reload the page.   
+#### How to use create flashcards
+Since the flashcards on MedicRecall are pre-written, some students may want to create their own and add them to existing study sets: it can be helpful to word compilated topics differently - so that it's written in a way that you understand and remember better. Use the create flashcards tool to do this and add them to the appropriate deck.
 
-iv.	Don’t let the user just flick straight through.   
+#### How to get help
+Find all relevant information and instructions by pressing one of the three help buttons on the dashboard or in settings. There are also tooltips across the app to find help.
 
-v.	Notifications when things are due.  
+# Developer Instructions
 
-And more...
-  
-  
+### Database Diagram
+![database drawio](https://github.com/user-attachments/assets/21d1992d-aeea-4868-83b9-9211308dcfb6)
 
-# Previous Year’s GitHub (2022):
-<br>
-[GitHub Repo](https://github.com/spe-uob/2022-MedicRecall)
-<br>
-<br>
-<br>
+### Architecture Diagram
+![Screenshot 2025-02-25 093238](https://github.com/user-attachments/assets/5e7d439b-dff7-4f1a-94af-92711e4b435c)
 
-# Overview:
-<br>
+## System Requirements
+To build MedicRecall, you'll need the following:
+- An IDE of choice: Visual Studio Code (Our prefererence), Android Studio or IntelliJ IDEA
 
-  The project proposal is called MedicRecall and is a continuation of one of last year's projects. The brief is to expand on the work they have already done to create a comprehensive revision platform that will welcome and host users this academic year. Continue with our **own idea**  <br>
-<br>
+## Compilation
+1. Download the Flutter editor plugin for your IDE (Android Studio, IntelliJ IDEA or VSCode)
+1. Open the repo with Android Studio or VSCode
+2. Ensure you're in the root folder (called flashcard):
+    - This can be done with `cd /flashcard`
 
+#### To run the web app
+3. Retrieve all dependencies
+    - Dependencies can be retrieved and installed with the following command: `flutter pub get`
+4. Run the program
+    - `flutter run`
+    - If there are multiple running options, type the number corresponding to the number to run it on Chrome - this number will be displayed in the terminal surrounded in square brackets like this: `[2]: Chrome (chrome)`
 
+## Why Firebase?
+We inherited Firebase from last year's project. 
 
-# Stakeholders:
-<br>
-- Medical students<br>
-<br>
-- Doctors<br>
-<br>
-- Lecturers<br>
-<br>
+There's a lot of functionality included in Firebase: there's a real-time database which syncs data across all clients; authentication is made easy as users can sign in with their Google account (in addition to signing in with their email address); analytics track how users interact with the app; and there's built-in crash reporting.
 
-# Setting Up:
-<br>
-
-## Requirements:
-<br>
- - If you wish to build MedicRecall yourself, you will need the following components/tools:<br>  
- <br>
- 
-●	Android Studio (available to download here)<br>
-<br>
-●	An emulator capable of running<br>
-<br>
-●	Android 6.0 or above or<br>
-<br>
-●	iOS 11 or above<br>
-<br>
-●	Flutter Development packages<br>
-<br>
-
-
-## Compiling:
-i.	After you have downloaded the repo, ensure that you are in the root folder: ` /flashcard `<br>
-<br>
-ii.	To build the app in android, use the command: ` flutter build apk `<br>
-<br>
-iii.	To build the app in iOS, use the command: ` flutter build ios --release --no-codesign ` <br>
-<br>
-iv.	To build the app in macOS, use the command: ` flutter create --platforms=macos `  followed by: ` flutter build macos `   <br> 
-<br>
-
-
-
-## Running the App:
-<br>
-  Although this app is still under development and not yet available on the Google Play Store or the iOS App Store, you can access the source code and perform more testing and debugging by following these steps:<br>
-
-1. Clone the repo: ` git clone https://github.com/spe-uob/2022-MedicRecall.git `
-
-2. Download the Flutter editor plugins for Android Studio, IntelliJ IDEA, or Visual Studio Code.
-
-3. Run: ` flutter pub get `    from the project root.<br>
-
-4. Prepare a device or use a web browser.
-
-5. Run: ` flutter run ` 
-
-<br>
-
-## Run the web app directly：
-<br>
-<br>
-
-The app is being hosted on Google Firebase at the following link:<br>
-<br>
-https://flashcard-6edc2.web.app<br>
-<br>
-
-When you click it, be sure to allow some time for the app to start up!<br>
-<br>
-
-
-
-# User Stories:
-| **Name** | **User Story** | **Feature required** |
-|----------|------------|------------------|
-| Doctor | As a doctor, I want it to help me recall some disease. | Recall Memory |
-| Busy student | As a medical student, I hope it reduces the review time. | Instant Feedback |
-| General student | As a medical student, I need it to test my understanding of knowledge. | Help Review |
-<br>
-
-# About Firebase:
-<br>
-Firebase is a platform that integrates many functions. It can help us build and test our project. It's also a platform with a large number of open-source packages, which will greatly reduce the difficulty of developing the project. The completed part of this project uses Dart language, so we will continue to develop using Dart language.
-<br>
-
-# CI/CD:
-i.	When a pull request is opened, a GitHub action creates an associated preview channel on Firebase, to which the changes from each commit are automatically deployed, and adds a comment to the pull request with the preview URL. Once a pull request has been created, any changes from new commits are automatically deployed to its preview channel without change to the preview URL. This allows the proposed changes to be easily viewed and tested by each reviewer.<br>
-<br>
-ii.	Before a pull request can be merged into the main branch, it must pass the GitHub actions which ensure that the proposed changes do not prevent the app from passing all tests and compiling for Android, IOS and the web.<br>
-<br>
-iii.	The app is automatically deployed to the live channel on Firebase when a pull request has been merged into the main branch and passed the integration tests. This is achieved by adding the service account's key to the repository as a secret.<br>
-<br>
-
-# Ethics:
-i.	Handling of user data is our top ethical concern. The pertinent legislation must be followed.
-
-ii.	When they are learning, we must give our users the most recent and correct information.
-
-iii.	We must exercise caution to prevent unintentionally breaking users' devices for instance, don't remove any files that are unrelated to MedicRecall or don't write any more files to a mobile device.
-
-# Gantt Chart:
-
-[Gantt Chart](https://uob-my.sharepoint.com/:x:/g/personal/uk21548_bristol_ac_uk/EdxNOLQdN6dNuAkYmCxvvpwB3U1XXNDYE3MUtbqgKRjwMw?e=awz8AG)
+## Contributors
+### Team members
+| Alex Gray | Onett Perera | Jiahao Dong | Omar Elekiaby | Suliman Alsami |
+| ---------------- | ---------------- | ---------------- | ---------------- | ---------------- |
+| alexgray-314 | onettonett | jhd7755 | oekiaby0 | sulaimans12 |
+#### Mentor
+Thomas Parr
+#### Client
+Dr William Harris
 

@@ -1,17 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashcard_x/screens/sign_in_screen.dart';
-import 'package:flashcard_x/widgets/drawer_widget.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
+import 'package:flashcard_x/utils/last_revised.dart';
+import 'package:flashcard_x/utils/theme_provider.dart';
+import 'package:flashcard_x/widgets/app_bar_title.dart';
+import 'package:flashcard_x/widgets/indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flashcard_x/screens/feed_screen.dart';
+import 'package:provider/provider.dart';
 import '../utils/page_transition.dart';
 import 'package:intl/intl.dart';
-
 
 class HomePage extends StatefulWidget {
   static String id = 'home';
 
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({super.key, required this.title});
   final String title;
 
   @override
@@ -19,13 +23,12 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
   late User user;
   late String? name;
   late String? id;
   late List<dynamic>? topicCount;
   List<dynamic>? topicLastSeen;
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference users = FirebaseWrapper.firestore().collection('users');
   final FirebaseAuth auth = FirebaseAuth.instance;
   bool loading = true;
   List<Map<String, dynamic>> topics = [];
@@ -39,7 +42,7 @@ class HomePageState extends State<HomePage> {
     List<dynamic> holderList = [];
 
     CollectionReference topicRef =
-    FirebaseFirestore.instance.collection("topics");
+    FirebaseWrapper.firestore().collection("topics");
     QuerySnapshot topicSnapshot = await topicRef.get();
     List<Map<String, dynamic>> holder = [];
     Map<String, bool> holderChecked = {};
@@ -68,17 +71,21 @@ class HomePageState extends State<HomePage> {
   }
 
   Future<void> getTopics() async {
-    setState(() {
-      loading = true;
-    });
-
+    if (mounted) {
+      setState(() {
+        loading = true;
+      });
+    }
+    
     var holderList = await getTopicsDatabase();
 
-    setState(() {
-      topics = holderList[0];
-      checked = holderList[1];
-      loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        topics = holderList[0];
+        checked = holderList[1];
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -102,54 +109,18 @@ class HomePageState extends State<HomePage> {
     // double width = MediaQuery.of(context).size.width;
     // double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      key: _key,
-      drawer: const DrawMain(),
-      appBar: AppBar(
-        title: Align(
-          alignment: const Alignment(-0.05,0),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 2.3,
-                child: Image.asset(
-                  'assets/newlogo.png',
-                  fit: BoxFit.cover,
-                  height: 34,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 32),
-                padding: const EdgeInsets.all(8.0),
-                child: const Text('Flashcard Tutor',
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        centerTitle: true,
-        elevation: 0,
-        leading: GestureDetector(
-          key: const ValueKey('Navbar'),
-          onTap: () => _key.currentState!.openDrawer(),
-          child: const Icon(
-            Icons.menu, // add custom icons also
-            // color: Colors.black,
-          ),
+    return AppScaffold(
+        body:  Center(
+      child: loading
+          ? const CircularProgressIndicator()
+          : SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: makeColumn(),
         ),
       ),
-
-      body: Center(
-        child: loading
-            ? const CircularProgressIndicator()
-            : SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: makeColumn(),
-                ),
-              ),
-      ),
+    ),
+        title: "Flashcard Tutor"
     );
   }
 
@@ -191,55 +162,22 @@ class HomePageState extends State<HomePage> {
     setState(() {
       loading = true;
     });
-    CollectionReference flashcardRef =
-        FirebaseFirestore.instance.collection('flashcards');
-    CollectionReference seenRef = FirebaseFirestore.instance
-        .collection("users/${id!}/flashcardsSeen");
-    QuerySnapshot seen = await seenRef.get();
-    QuerySnapshot all =
-        await flashcardRef.where("owner", isEqualTo: "all").get();
-    QuerySnapshot userCards =
-        await flashcardRef.where("owner", isEqualTo: id).get();
 
-    for (var doc in seen.docs) {
-      DocumentSnapshot card = await flashcardRef.doc(doc["cardID"]).get();
-      if (card.exists) {
-        Map<String, dynamic> data = card.data() as Map<String, dynamic>;
-        incrementMap(seenCards, data["topic"].toString());
-        if (data["subtopic"] != "") {
-          incrementMap(seenCards, data["subtopic"].toString());
-        }
-      }
+    TopicStats stats = await LastRevised.getStats();
+    if (mounted) {
+      setState(() {
+        totalCards = stats.totalCards;
+        seenCards = stats.seenCards;
+        loading = false;
+      });
     }
-                                                 //to do: change this to only load cards selected
-    for (var doc in all.docs + userCards.docs) { //This loads all the cards during the dashboard screen loading process...
-      if (doc.exists) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        // print(data.toString());
-        incrementMap(totalCards, data["topic"].toString());
-        if (data["subtopic"] != "") {
-          incrementMap(totalCards, data["subtopic"].toString());
-        }
-      }
-    }
-
-    setState(() {
-      loading = false;
-    });
-  }
-
-  void incrementMap(Map<String, int> map, String key) {
-    if (map.containsKey(key)) {
-      map.update(key, (i) => map[key]! + 1);
-      return;
-    }
-    map[key] = 1;
+    
   }
 
   //Formats the checkbox categories according to colour depending on whether the review date is due and how many flashcards have been seen.
-  List<ExpansionTile> makeCheckboxList() {
+  List<Widget> makeCheckboxList() {
 
-    List<ExpansionTile> value = [];
+    List<Widget> value = [];
     for (var i = 0; i < topics.length; i++) {
 
       var map = topics[i];
@@ -252,7 +190,8 @@ class HomePageState extends State<HomePage> {
 
       //A mapping of how many times the topics been seen to what the next review date gap should be. After 7 times it stays at 128 days.
       Map<int, int> dateToColourMap = {0: ((howLongAgoRevisedDays.ceil()*4)+1), 1: 2, 2: 4, 3: 8, 4: 16, 5: 32, 6: 64, 7: 128};
-      MaterialColor topicColour = Colors.green;
+      // MaterialColor topicColour = Colors.green;
+      Color tColour = Color(0xFFB0FFC6); // green
       if (topicCount![i]>(dateToColourMap.length-1)){
         topicCount![i]=dateToColourMap.length-1;
       }
@@ -263,58 +202,70 @@ class HomePageState extends State<HomePage> {
 
       // Section is grey if it hasn't been seen at all, Green if next review date isn't gone past and Red if next review date has none past
       if (dateToColourMap[topicCount![i]]! > howLongAgoRevisedDays) {
-        topicColour = Colors.green;
+        // topicColour = Colors.green;
+        tColour = Color(0xFFB0FFC6); // green
       } else {
-        topicColour = Colors.red;
+        // topicColour = Colors.red;
+        tColour = Color(0xFFFF9595); // red
       }
       if (topicCount![i] == 0) {
-        topicColour = Colors.grey;
+        // topicColour = Colors.grey;
+        tColour = Color(0xFFD9D9D9);
         formattedDate = "N/A";
       }
 
-      value.add(
-          ExpansionTile(
-          trailing: Text(
-              "$text / ${totalCards[map["topic"].toString()]}",
-              style: const TextStyle(color: Colors.white),
-          ),
-          backgroundColor: topicColour,
-          collapsedBackgroundColor: topicColour,
-          textColor: Colors.black,
-          title: Text(
-              "${map["topic"]}  ${map["emoji"]}",
-              style: const TextStyle(color: Colors.white),
-          ),
-          leading: Checkbox(
-            side: const BorderSide(
-                    color: Colors.white,
-                    width: 1.5
-                  ),
-            key: i == 0 ? const ValueKey("Checkbox") : UniqueKey(),
-            value: checked[map["topic"]],
-            onChanged: (bool? value) {
-              setState(() {
-                checked[map["topic"]] = value!;
+      value.add(Padding(padding: EdgeInsets.only(bottom: 8, left: 15, right: 15), child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Tooltip(
+          message: "Click to view subtopics",
+          decoration: BoxDecoration(color: Colors.transparent),
+          enableTapToDismiss: true,
+          verticalOffset: -11,
+          preferBelow: false,
+          child: ExpansionTile(
+            trailing: Text(
+                "$text / ${totalCards[map["topic"].toString()]}",
+                style: const TextStyle(color: Colors.black),
+            ),
+            backgroundColor: tColour,
+            collapsedBackgroundColor: tColour,
+            textColor: Colors.black,
+            title: Text(
+                "${map["topic"]}",
+                style: const TextStyle(color: Colors.black),
+            ),
+            leading: Checkbox(
+              side: const BorderSide(
+                      color: Colors.black,
+                      width: 1.5
+                    ),
+              key: i == 0 ? const ValueKey("Checkbox") : UniqueKey(),
+              value: checked[map["topic"]],
+              onChanged: (bool? value) {
+                setState(() {
+                  checked[map["topic"]] = value!;
 
-                for (var subtopic in map["subtopics"]) {
-                  checked[subtopic.toString()] = checked[map["topic"]]!;
-                }
-              });
-            },
-          ),
-          subtitle: Row(
-            children: [
-              const Text(
-                "Next Review Date: ",
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                formattedDate,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-          children: makeCheckbox(map)));
+                  for (var subtopic in map["subtopics"]) {
+                    checked[subtopic.toString()] = checked[map["topic"]]!;
+                  }
+                });
+              },
+            ),
+            subtitle: Row(
+              children: [
+                const Text(
+                  "Next Review Date: ",
+                  style: TextStyle(color: Colors.black),
+                ),
+                Text(
+                  formattedDate,
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+            children: makeCheckbox(map))
+        ),
+      )));
     }
     return value;
   }
@@ -327,11 +278,11 @@ class HomePageState extends State<HomePage> {
           : seenCards[subtopic.toString()].toString();
       value.add(CheckboxListTile(
         side: const BorderSide(
-            color: Colors.white,
+            color: Colors.black,
             width: 1.5),
         secondary: Text(
           "$text / ${totalCards[subtopic.toString()]}",
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.black),
         ),
         value: checked[subtopic.toString()],
         controlAffinity: ListTileControlAffinity.leading,
@@ -352,7 +303,7 @@ class HomePageState extends State<HomePage> {
         },
         title: Text(
           subtopic.toString(),
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.black),
         ),
       ));
     }
@@ -364,28 +315,28 @@ class HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color.fromRGBO(67, 67, 67, 1.0),
-          title: const Text('Instructions',
-              style: TextStyle(
-                color: Colors.white,
-              )
-          ),
+          title: const Text(
+            'Instructions',
+            style: TextStyle(fontSize: 20),
+            ),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
+                SizedBox(height: 5),
                 Text(
                   '1. Start a revision session by completing one or more of our flashcard decks.\n'
                       '2. Work through each question, ensuring that you answer the question in your head before flipping the card (active recall).\n'
                       '3. Click the tick or cross next to the flashcard to indicate whether you have mastered the card.\n'
                       '4. At the end of each deck, you will be prompted to review all the cards that you are still learning before moving on.\n'
                       '5.	Once completed, the deck will turn green.\n'
-                      '6. After two days, the categories will turn red, signifying that it is time to review the deck again.\n'
-                      '7. Repeat this cycle throughout your revision periods; the time between repetitions will increase with successive reviews.\n'
+                      '6. Then, our tailored spaced repetition algorithm kicks in and will schedule your next review date for that topic.\n'
+                      '7. Repeat this cycle throughout your revision period; the time between repetitions will increase with successive reviews.\n'
                       '8.	If you wish to receive email reminders when a topic is overdue, you can turn on this feature in our settings tab.',
-                    style: TextStyle(
-                      color: Colors.white,
-                    )
+                      style: TextStyle(
+                        fontSize: 18,
+                        height: 1.5,
+                      )
                 ),
               ],
             ),
@@ -405,63 +356,19 @@ class HomePageState extends State<HomePage> {
 
   List<Widget> makeColumn() {
     List<Widget> widgets = [
-      const SizedBox(height: 40),
-      Container(
-          width:1200,
-          height: 200,
-          margin: const EdgeInsets.only(bottom: 10.0, left: 30.0, right: 30.0),
-          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-          decoration: BoxDecoration(
-            color: Colors.blueGrey,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        child: const Center(
-          child: SingleChildScrollView(
-            child: Text(
-              "Our pre-made flashcard decks contain hundreds of high-yield questions,\n"
-                  " all derived from UFPO and GMC guidance. It uses our unique spaced repetition system to help you\n"
-                  "to learn and retain more content in less time.",
-              //get the question from the map
-              textAlign: TextAlign.center,
-              style: TextStyle(
-              fontSize:26,
-              color: Colors.white,
-              )
-            )
-          ),
-        ),
-
-      ),
       const SizedBox(height: 10),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
 
-        children: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(0, 160, 227, 1),
-              side: const BorderSide(
-                  color: Color.fromRGBO(0, 160, 227, 1), width: 2),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(100))),
-            ),
+        children: <Widget>[
+          Indicator(color: Color.fromRGBO(0xFA, 0xFA, 0xFA, 1), text: "Unseen"),
+          Indicator(color: Color.fromRGBO(0xFF, 0x95, 0x95, 1), text: "Needs Review"),
+          Indicator(color: Color.fromRGBO(0xB0, 0xFF, 0xC6, 1), text: "Recently Reviewed"),
 
-            onPressed: () {
-              explanationBox();
-            },
-
-            child: const Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Text('How does it work?',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w500)),
-            ),
-          ),
         ],
+
+
       ),
 
       const SizedBox(height: 40),
@@ -474,35 +381,57 @@ class HomePageState extends State<HomePage> {
 
       const SizedBox(height: 20),
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextButton(
-            key: const ValueKey("Revise"),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(0, 160, 227, 1),
-              side: const BorderSide(
-                  color: Color.fromRGBO(0, 160, 227, 1), width: 2),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(100))),
+          SizedBox(width: 60),
+          Spacer(flex: 1),
+          Expanded(
+            flex: 1,
+            child: Align(child: TextButton(
+              key: const ValueKey("Revise"),
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(
+                  fontSize: 20,
+                ),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+              ),
+
+              onPressed: () {
+                // reviseCards("revise");
+                reviseCards();
+              },
+
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                child: Text('Revise'),
+              ),
             ),
+          )),
 
-            onPressed: () {
-              // reviseCards("revise");
-              reviseCards();
-            },
+          Expanded(
+            flex: 1, 
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
 
+                onPressed: () {
+                  explanationBox();
+                },
 
-            child: const Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Text('Revise',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w500)),
-            ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  child: Icon(Icons.question_mark, color: Provider.of<ThemeProvider>(context).isDarkMode ? Colors.white : Colors.black,),
+                ),
+              ),
+            )
           ),
+          SizedBox(width: 60,)
         ],
       ),
       const SizedBox(height: 20),
@@ -515,7 +444,7 @@ class HomePageState extends State<HomePage> {
   AlertDialog alertDialogue() {
     return AlertDialog(
       title: const Text(
-          'Alert'),
+          'No topics selected'),
       content: const Text(
           'Please select a topic by ticking the checkbox beside the category before pressing revise.'),
       actions: <

@@ -1,4 +1,5 @@
 import 'package:flashcard_x/screens/ms_comments.dart';
+import 'package:flashcard_x/widgets/app_bar_title.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -34,7 +35,7 @@ class MSSingle extends StatefulWidget {
   final List<int> typeQuestions;
   final int currentIndex;
 
-  const MSSingle({Key? key, required this.msiSingle, required this.allQuestions, required this.typeQuestions, required this.currentIndex}) : super(key: key);
+  const MSSingle({super.key, required this.msiSingle, required this.allQuestions, required this.typeQuestions, required this.currentIndex});
 
   @override
 
@@ -62,37 +63,9 @@ class _MSSingleState extends State<MSSingle> {
     bool isOfficial = widget.msiSingle.bool.contains('official');
     bool isUnofficial = widget.msiSingle.bool.contains('un');
 
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Align(
-            alignment: const Alignment(-0.06, 0),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 2.3,
-                  child: Image.asset(
-                    'assets/newlogo.png',
-                    fit: BoxFit.cover,
-                    height: 34,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 32),
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text("Mark Scheme"),
-                ),
-              ],
-            ),
-          ),
-          centerTitle: true,
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const Icon(
-              Icons.arrow_back,
-            ),
-          ),
-        ),
+    return AppScaffold(
+        title: "Mark Scheme",
+        showBack: true,
         body: SafeArea(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -247,11 +220,7 @@ class _MSSingleState extends State<MSSingle> {
                         areSectionsVisible = !areSectionsVisible;
                       });
                     },
-                    child: Text(areSectionsVisible ? 'Hide Answer' : 'Show Answer',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),),
+                    child: Text(areSectionsVisible ? 'Hide Answer' : 'Show Answer')
                   ),
 
                   Padding(
@@ -288,7 +257,7 @@ class _MSSingleState extends State<MSSingle> {
                           }},
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.white,
-                            disabledForegroundColor: Colors.grey.withOpacity(0.38),
+                            disabledForegroundColor: Colors.grey.withValues(alpha: 0.38),
                             backgroundColor: Colors.green,
                             side: const BorderSide(color: Colors.green, width: 2),
                             shape: const RoundedRectangleBorder(
@@ -332,7 +301,7 @@ class _MSSingleState extends State<MSSingle> {
                           }},
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.white,
-                            disabledForegroundColor: Colors.grey.withOpacity(0.38),
+                            disabledForegroundColor: Colors.grey.withValues(alpha: 0.38),
                             backgroundColor: Colors.green,
                             side: const BorderSide(color: Colors.green, width: 2),
                             shape: const RoundedRectangleBorder(
@@ -350,7 +319,7 @@ class _MSSingleState extends State<MSSingle> {
                       TextButton(
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white,
-                          disabledForegroundColor: Colors.grey.withOpacity(0.38),
+                          disabledForegroundColor: Colors.grey.withValues(alpha: 0.38),
                           backgroundColor: Colors.green,
                           side: const BorderSide(color: Colors.green, width: 2),
                           shape: const RoundedRectangleBorder(
@@ -381,7 +350,7 @@ class _MSSingleState extends State<MSSingle> {
 class LabelWidget extends StatelessWidget {
   final String labelText;
 
-  const LabelWidget({Key? key, required this.labelText}) : super(key: key);
+  const LabelWidget({super.key, required this.labelText});
 
   @override
   Widget build(BuildContext context) {

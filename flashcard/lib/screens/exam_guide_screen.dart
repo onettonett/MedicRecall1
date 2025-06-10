@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 
 class Information extends StatelessWidget {
-  const Information({Key? key}) : super(key: key);
+  const Information({super.key});
 
   /*
     AnimationController controller = AnimationController(
@@ -31,7 +31,7 @@ class Information extends StatelessWidget {
                   Positioned(
                     top: 2.3,
                     child: Image.asset(
-                      'assets/newlogo.png',
+                      'assets/app_logo4.png',
                       fit: BoxFit.cover,
                       height: 34,
                     ),

@@ -4,7 +4,6 @@ description: to edit
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -18,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  sdk: ">=3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -27,23 +26,24 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  intl: ^0.17.0
+  intl: ^0.20.2
   universal_html: ^2.2.1
-  mockito: ^5.4.0
   flutter:
     sdk: flutter
 
+  fl_chart: ^0.70.2
 
-  http: ^0.13.5
+
+  http: ^1.2.2
   flip_card: ^0.7.0
 
-  cloud_firestore: ^2.5.0
-  firebase_core: ^1.13.1
-  firebase_messaging: ^11.2.13
+  cloud_firestore: ^5.4.4
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.3
   shared_preferences: ^2.1.0
   provider: ^6.0.5
   day_night_switcher: ^0.2.0+1
-  flutter_settings_ui: ^2.0.1
+  flutter_settings_ui: ^3.0.1
 
   # online storage for files
   # firebase_storage:
@@ -52,7 +52,7 @@ dependencies:
 
 
 
-  firebase_auth: 3.3.17
+  firebase_auth: ^5.3.1
   reviews_slider: ^2.0.0
 
   google_sign_in: ^6.1.0
@@ -67,35 +67,44 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.5
-  google_fonts: ^4.0.3
+  google_fonts: ^6.2.1
   url_launcher: ^6.1.10
-  flutter_tindercard: ^0.2.0
   swiping_card_deck: ^1.3.0
-  table_calendar: ^3.0.8
-  getwidget: ^3.0.1
+  getwidget: ^5.0.0
   responsive_grid: ^2.2.0
+  flutter_launcher_icons: ^0.14.1
+  collection: ^1.18.0
+  firebase_auth_mocks: ^0.14.1
+  fake_cloud_firestore: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.12.0
+  flutter_lints: ^5.0.0
   flutter_native_splash: ^2.1.6
+  test: ^1.25.8
+  build_runner: ^2.4.15
+  mockito: ^5.4.5
 
+# Icon for the pre-loading screen
 flutter_native_splash:
   color: "#FFFFFF"
   color_dark: "#000000"
-  image: assets/app_logo2_removebg.png
+  image: assets/app_logo4.png
   android: true
   ios: true
-  android12: true
+  # to update, dart run flutter_native_splash:create
 
-flutter_icons:
-  android: "launcher_icon"
+flutter_launcher_icons:
+  android: true
   ios: true
-  image_path: "assets/app_logo2.png"
+  remove_alpha_ios: true
+  image_path: "assets/app_logo4.png"
+  web:
+    generate: true
+    image_path: "assets/app_logo4.png"
 
   # to update icon, flutter pub run flutter_launcher_icons:main
 
@@ -113,15 +122,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-
-    - assets/doughnut.png
     - assets/folder_icon.png
-    - assets/google_logo.png
     - assets/btn_google_signin_dark_pressed_web@2x.png
-    - assets/app_logo2_removebg.png
-    - assets/app_logo3_removebg.png
-    - assets/newlogo.png
-    - assets/app_logo2.png
+    - assets/app_logo4.png
     - assets/rating_image.png
     - assets/ranking_image.png
     - assets/graph.png

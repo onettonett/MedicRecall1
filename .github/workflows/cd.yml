@@ -1,0 +1,57 @@
+name: CD - Deploy to AWS Amplify
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.3'
+          channel: "stable"
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+        working-directory: flashcard
+
+      - name: Build Flutter Web
+        run: flutter build web
+        working-directory: flashcard
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Create Deployment in Amplify
+        id: create_deployment
+        run: |
+          RESPONSE=$(aws amplify create-deployment --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name ${{ github.ref_name }})
+          echo "JOB_ID=$(echo $RESPONSE | jq -r '.jobId')" >> $GITHUB_ENV
+          echo "UPLOAD_URL=$(echo $RESPONSE | jq -r '.zipUploadUrl')" >> $GITHUB_ENV
+
+      - name: Zip Build Folder
+        run: |
+          cd flashcard/build/web
+          zip -r build.zip *
+
+      - name: Upload Build to Amplify
+        run: |
+          curl -T flashcard/build/web/build.zip "$UPLOAD_URL"
+
+      - name: Start Deployment
+        run: |
+          aws amplify start-deployment --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name ${{ github.ref_name }} --job-id $JOB_ID

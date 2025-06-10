@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_x/screens/dashboard_screen.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class FolderGridView extends StatelessWidget {
   final CollectionReference flashcards =
-      FirebaseFirestore.instance.collection('flashcards');
+      FirebaseWrapper.firestore().collection('flashcards');
 
-  FolderGridView({Key? key}) : super(key: key);
+  FolderGridView({super.key});
 
   @override
   Widget build(BuildContext context) {

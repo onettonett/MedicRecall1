@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SignUpScreen extends StatefulWidget {
   static String id = 'signup';
 
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -26,6 +26,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () {
         _nameFocusNode.unfocus();
@@ -42,14 +44,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/newlogo.png',
+                  'assets/app_logo4.png',
                   // this file doesn't exist and generates error
                   height: 130,
                 ),
                 const SizedBox(height: 20),
-                const Text("Sign Up",
-                    style:
-                        TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
+                Text("Sign Up",
+                    style: theme.textTheme.displayMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    )),
                 const SizedBox(height: 20),
                 RegistrationForm(
                   nameFocusNode: _nameFocusNode,

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_x/screens/ms_single.dart';
+import 'package:flashcard_x/utils/firebase_wrapper.dart';
 import 'package:flutter/material.dart';
 
 import 'mark_scheme.dart';
@@ -55,7 +56,7 @@ int questionComparison(Map<String, dynamic> a, Map<String, dynamic> b) { // What
 
 Future<void> msiTypeList(String msType) async {
   // take the type from the selection by the user
-  CollectionReference typeRef = FirebaseFirestore.instance
+  CollectionReference typeRef = FirebaseWrapper.firestore()
       .collection("markscheme"); // collecting data from the markscheme folder
   QuerySnapshot typeSnapshot = await typeRef.get();
 
@@ -87,9 +88,9 @@ class MSI extends StatefulWidget {
 
   // in constructor, require a type to be handed over
   const MSI({
-    Key? key,
+    super.key,
     required this.qtype,
-  }) : super(key: key);
+  });
 
   // MSInfo is required
 
@@ -167,7 +168,7 @@ class _MSIState extends State<MSI> {
                 Positioned(
                   top: 2.3,
                   child: Image.asset(
-                    'assets/newlogo.png',
+                    'assets/app_logo4.png',
                     fit: BoxFit.cover,
                     height: 34,
                   ),

@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "flashcard-6edc2"
-  }
+    "default": "flashcard-6edc2",
+    "medicrecall1preview": "medicrecall1preview"
+  },
+  "targets": {},
+  "etags": {}
 }
