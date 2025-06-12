@@ -6,6 +6,7 @@ import 'package:flashcard_x/screens/dashboard_screen.dart';
 import 'package:flashcard_x/screens/exam_declaration.dart';
 import 'package:flashcard_x/screens/explanation.dart';
 import 'package:flashcard_x/screens/faq.dart';
+import 'package:flashcard_x/screens/flashcard_editor_screen.dart';
 // import 'package:flashcard_x/screens/feedback_screen.dart';
 import 'package:flashcard_x/screens/sign_in_screen.dart';
 import 'package:flashcard_x/utils/firebase_wrapper.dart';
@@ -123,6 +124,27 @@ class DashboardState extends State<Dashboard> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 20),
+                    Row(children: [
+                      BottomButton(
+                          label: 'Study Schedule',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MoveRightRoute(page: const Calendar()),
+                            );
+                          },
+                        ),
+                        BottomButton(
+                          label: 'Create New Flashcards',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MoveRightRoute(page: const FlashcardEditor()),
+                            );
+                          },
+                        )
+                    ],),
                     SizedBox(height: 14),
                     Row(
                       children: [
