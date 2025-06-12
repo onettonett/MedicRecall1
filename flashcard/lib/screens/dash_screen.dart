@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_x/screens/calendar_screen.dart';
 import 'package:flashcard_x/screens/dashboard_screen.dart';
+import 'package:flashcard_x/screens/exam_declaration.dart';
 import 'package:flashcard_x/screens/explanation.dart';
 import 'package:flashcard_x/screens/faq.dart';
 // import 'package:flashcard_x/screens/feedback_screen.dart';
@@ -39,7 +40,7 @@ class DashboardState extends State<Dashboard> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   late User user;
 
-  String? nextTopicForReciew;
+  String? nextTopicForReview;
   String? daysUntilExam;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? stream;
 
@@ -85,8 +86,11 @@ class DashboardState extends State<Dashboard> {
                       children: [
                         Expanded(
                           child: DashboardBox(
-                            title: 'Next Flashcard Deck:',
-                            subtitle: nextTopicForReciew,
+                            title: 'Flashcard Tutor',
+                            //subtitle: "Next topic for review: ${nextTopicForReview}",
+                            subtitle: nextTopicForReview != null
+                                ? "Next topic for review: ${nextTopicForReview}"
+                                : "No topics scheduled.",
                             buttonText: 'Start Now',
                             onPressed: () {
                               Navigator.push(
@@ -98,14 +102,21 @@ class DashboardState extends State<Dashboard> {
                         ),
                         SizedBox(width: 16),
                         Expanded(
-                          child: DashboardBox(
+                          child: DashboardBox2(
                             title: 'Next Mock Exam:',
-                            buttonText: 'Study Schedule',
+                            button1Text: 'Full-Sized Mock',
+                            button2Text: 'Mini Mocks',
                             subtitle: 'Official Paper 1',
-                            onPressed: () {
+                            on1Pressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Calendar())
+                                MaterialPageRoute(builder: (context) => ExamDeclaration())
+                              );
+                            },
+                            on2Pressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ExamDeclaration())
                               );
                             },
                           ),
@@ -245,7 +256,7 @@ class DashboardState extends State<Dashboard> {
 
     if (mounted) {
       setState(() {
-        nextTopicForReciew = nextTopic;
+        nextTopicForReview = nextTopic;
       });
     }
 
@@ -361,6 +372,93 @@ class DashboardBox extends StatelessWidget {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DashboardBox2 extends StatelessWidget {
+  const DashboardBox2({super.key, 
+    required this.title,
+    required this.button1Text,
+    required this.button2Text,
+    required this.on1Pressed,
+    required this.on2Pressed,
+    this.subtitle,
+    this.height,
+  });
+
+  final String title;
+  final String button1Text;
+  final String button2Text;
+  final Null Function() on1Pressed;
+  final Null Function() on2Pressed;
+  final String? subtitle;
+  final double? height;
+
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return SizedBox(
+      height: height ?? 160,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: themeProvider.isDarkMode ? Colors.blueGrey : Colors.blue[50],
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              ElevatedButton(
+               onPressed: on1Pressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: themeProvider.isDarkMode ? Colors.black54 : Color.fromRGBO(44, 44, 44, 1),
+              ),
+              child: Text(
+                button1Text,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            ElevatedButton(
+              onPressed: on2Pressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: themeProvider.isDarkMode ? Colors.black54 : Color.fromRGBO(44, 44, 44, 1),
+              ),
+              child: Text(
+                button2Text,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white
+                ),
+              ),
+            ),
+            ],),
+            SizedBox(height: 20),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                  color: themeProvider.isDarkMode ? Colors.white : Colors.black
+              ),
+            ),
+            SizedBox(height: 10),
+            subtitle == null ? CircularProgressIndicator(color: themeProvider.isDarkMode ? Colors.white : Colors.black) : Text(
+              subtitle!,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                  color: themeProvider.isDarkMode ? Colors.white : Colors.black
+              ),
+            ),
+            Spacer(),
           ],
         ),
       ),
