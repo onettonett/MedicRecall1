@@ -68,233 +68,194 @@ class DashboardState extends State<Dashboard> {
     return AppScaffold(
       title: "User Dashboard",
       body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DashboardBox(
-                            title: 'Flashcard Tutor',
-                            //subtitle: "Next topic for review: ${nextTopicForReview}",
-                            subtitle: nextTopicForReview != null
-                                ? "Next topic for review: ${nextTopicForReview}"
-                                : "No topics scheduled.",
-                            buttonText: 'Start Now',
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: DashboardBox2(
-                            title: 'Next Mock Exam:',
-                            button1Text: 'Full-Sized Mock',
-                            button2Text: 'Mini Mocks',
-                            subtitle: 'Official Paper 1',
-                            on1Pressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ExamDeclaration())
-                              );
-                            },
-                            on2Pressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ExamDeclaration())
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: DashboardBoxLeft(
+                      title: 'Flashcard Tutor',
+                      //subtitle: "Next topic for review: ${nextTopicForReview}",
+                      subtitle: nextTopicForReview != null
+                          ? "Next topic for review: ${nextTopicForReview}"
+                          : "No topics scheduled.",
+                      buttonText: 'Start Now',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
+                        );
+                      },
                     ),
-                    SizedBox(height: 20),
-                    Row(children: [
-                      BottomButton(
-                          label: 'Study Schedule',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MoveRightRoute(page: const Calendar()),
-                            );
-                          },
-                        ),
-                        BottomButton(
-                          label: 'Create New Flashcards',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MoveRightRoute(page: const FlashcardEditor()),
-                            );
-                          },
-                        )
-                    ],),
-                    SizedBox(height: 14),
-
-                    Row(children: [
-                      Expanded(
-                        child: Card(
-                          color: AppColours.darkBlue,
-                          child: Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 20.0, vertical: 15.0),
-                          child: Column(children: [
-                            Text(
-                              "Statistics",
-                              style: theme.textTheme.titleMedium!.copyWith(
-                                color: AppColours.almostWhite),
-                            ),
-                            SizedBox(height: 6),
-                            Row(children: [
-                              Expanded(
-                                child: Card(
-                                color: AppColours.almostWhite,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      "Streak Count $howManyDaysInARow",
-                                      style: theme.textTheme.bodyMedium!.copyWith(
-                                        color: AppColours.darkBlue,
-                                      ),
-                                    ),
-                                  ),
-                              ),
-                              ),
-                              SizedBox(width: 6),
-                              Expanded(
-                                child: Card(
-                                color: AppColours.almostWhite,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      "Total Days Revised $howManyDaysInARow",
-                                      style: theme.textTheme.bodyMedium!.copyWith(
-                                        color: AppColours.darkBlue,
-                                      ),
-                                    ),
-                                  ),
-                              ),
-                              ),
-                              SizedBox(width: 6),
-                              Expanded(
-                                child: Card(
-                                color: AppColours.almostWhite,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      "Exam Countdown $howManyDaysInARow",
-                                      style: theme.textTheme.bodyMedium!.copyWith(
-                                        color: AppColours.darkBlue,
-                                      ),
-                                    ),
-                                  ),
-                              ),
-                              )
-                            ],)
-                          ],)
-                          )
-                        )
-                      )
-                    ],),
-
-                    /// ---DEPRECATED STREAKS CARD CODE ---
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       child: Card(
-                    //         color: AppColours.darkBlue,
-                    //         child: Padding(
-                    //           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                    //           child: Column(
-                    //             children: [
-                    //               Align(
-                    //                 alignment: Alignment.centerLeft,
-                    //                 child: Text(
-                    //                   "Streaks",
-                    //                   style: theme.textTheme.titleMedium!.copyWith(
-                    //                     color: AppColours.almostWhite,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //               const SizedBox(height: 10),
-                    //               SingleChildScrollView(
-                    //                 scrollDirection: Axis.horizontal,
-                    //                 child: whichDaysRevised.isNotEmpty 
-                    //                   ? Row(
-                    //                       children: [
-                    //                         MiniStreakCard(date: todaysDate.day.toString(), isActive: whichDaysRevised[0]),
-                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 1)).day.toString(), isActive: whichDaysRevised[1]), 
-                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 2)).day.toString(), isActive: whichDaysRevised[2]),
-                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 3)).day.toString(), isActive: whichDaysRevised[3]), 
-                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 4)).day.toString(), isActive: whichDaysRevised[4]), 
-                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 5)).day.toString(), isActive: whichDaysRevised[5]),
-                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 6)).day.toString(), isActive: whichDaysRevised[6]),
-                    //                       ],
-                    //                     ) 
-                    //                   : Center(child: CircularProgressIndicator()),
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ]
-                    // ),
-                    SizedBox(height: 14),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        BottomButton(
-                          label: 'How does the platform work?',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MoveRightRoute(page: const ExplanationScreen()),
-                            );
-                          },
-                        ),
-                        BottomButton(
-                          label: 'Frequently asked Questions',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MoveRightRoute(page: const FAQScreen()),
-                            );
-                          },
-                        ),
-                        BottomButton(
-                          label: 'Give us Feedback',
-                          onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MoveRightRoute(page: const FeedbackScreen()),
-                            // );
-                            () async {
-                              //on tap code here, you can navigate to other page or URL
-                              String url =
-                                  "https://docs.google.com/forms/d/e/1FAIpQLSf10CDlLeFpaONtjS1pU0qcEsdQPfngeXh70-hhZpXUGCQDqA/viewform?usp=sf_link";
-                              var urllaunchable =
-                                  await canLaunchUrlString(
-                                  url); //canLaunch is from url_launcher package
-                              if (urllaunchable) {
-                                await launchUrlString(
-                                    url); //launch is from url_launcher package to launch URL
-                              }
-                            }();
-                          },
-                        ),
-                      ],
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: DashboardBoxRight(
+                      title: 'Next Mock Exam:',
+                      button1Text: 'Full-Sized Mock',
+                      button2Text: 'Mini Mocks',
+                      subtitle: 'Official Paper 1',
+                      on1Pressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ExamDeclaration())
+                        );
+                      },
+                      on2Pressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ExamDeclaration())
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
+              SizedBox(height: 20),
+              Row(children: [
+                BottomButton(
+                    label: 'Study Schedule',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MoveRightRoute(page: const Calendar()),
+                      );
+                    },
+                  ),
+                  BottomButton(
+                    label: 'Create New Flashcards',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MoveRightRoute(page: const FlashcardEditor()),
+                      );
+                    },
+                  )
+              ],),
+              SizedBox(height: 14),
+
+              Row(children: [
+                Expanded(
+                  child: Card(
+                    color: AppColours.darkBlue,
+                    child: Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 20.0, vertical: 15.0),
+                    child: Column(children: [
+                      Text(
+                        "Statistics",
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          color: AppColours.almostWhite),
+                      ),
+                      SizedBox(height: 6),
+                      Row(children: [
+                        StatisticsWidget1(title: "Streak Count"),
+                        SizedBox(width: 6),
+                        StatisticsWidget1(title: "Total Hours Revised"),
+                        SizedBox(width: 6),
+                        StatisticsWidget1(title: "Exam Countdown"),
+                      ],)
+                    ],)
+                    )
+                  )
+                )
+              ],),
+
+              /// ---DEPRECATED STREAKS CARD CODE ---
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Card(
+              //         color: AppColours.darkBlue,
+              //         child: Padding(
+              //           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              //           child: Column(
+              //             children: [
+              //               Align(
+              //                 alignment: Alignment.centerLeft,
+              //                 child: Text(
+              //                   "Streaks",
+              //                   style: theme.textTheme.titleMedium!.copyWith(
+              //                     color: AppColours.almostWhite,
+              //                   ),
+              //                 ),
+              //               ),
+              //               const SizedBox(height: 10),
+              //               SingleChildScrollView(
+              //                 scrollDirection: Axis.horizontal,
+              //                 child: whichDaysRevised.isNotEmpty 
+              //                   ? Row(
+              //                       children: [
+              //                         MiniStreakCard(date: todaysDate.day.toString(), isActive: whichDaysRevised[0]),
+              //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 1)).day.toString(), isActive: whichDaysRevised[1]), 
+              //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 2)).day.toString(), isActive: whichDaysRevised[2]),
+              //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 3)).day.toString(), isActive: whichDaysRevised[3]), 
+              //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 4)).day.toString(), isActive: whichDaysRevised[4]), 
+              //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 5)).day.toString(), isActive: whichDaysRevised[5]),
+              //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 6)).day.toString(), isActive: whichDaysRevised[6]),
+              //                       ],
+              //                     ) 
+              //                   : Center(child: CircularProgressIndicator()),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ]
+              // ),
+              SizedBox(height: 14),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BottomButton(
+                    label: 'How does the platform work?',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MoveRightRoute(page: const ExplanationScreen()),
+                      );
+                    },
+                  ),
+                  BottomButton(
+                    label: 'Frequently asked Questions',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MoveRightRoute(page: const FAQScreen()),
+                      );
+                    },
+                  ),
+                  BottomButton(
+                    label: 'Give us Feedback',
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MoveRightRoute(page: const FeedbackScreen()),
+                      // );
+                      () async {
+                        //on tap code here, you can navigate to other page or URL
+                        String url =
+                            "https://docs.google.com/forms/d/e/1FAIpQLSf10CDlLeFpaONtjS1pU0qcEsdQPfngeXh70-hhZpXUGCQDqA/viewform?usp=sf_link";
+                        var urllaunchable =
+                            await canLaunchUrlString(
+                            url); //canLaunch is from url_launcher package
+                        if (urllaunchable) {
+                          await launchUrlString(
+                              url); //launch is from url_launcher package to launch URL
+                        }
+                      }();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -392,8 +353,8 @@ class DashboardState extends State<Dashboard> {
   }
 }
 
-class DashboardBox extends StatelessWidget {
-  const DashboardBox({super.key, 
+class DashboardBoxLeft extends StatelessWidget {
+  const DashboardBoxLeft({super.key, 
     required this.title,
     required this.buttonText,
     required this.onPressed,
@@ -458,8 +419,8 @@ class DashboardBox extends StatelessWidget {
   }
 }
 
-class DashboardBox2 extends StatelessWidget {
-  const DashboardBox2({super.key, 
+class DashboardBoxRight extends StatelessWidget {
+  const DashboardBoxRight({super.key, 
     required this.title,
     required this.button1Text,
     required this.button2Text,
@@ -539,6 +500,45 @@ class DashboardBox2 extends StatelessWidget {
             ),
             Spacer(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class StatisticsWidget1 extends StatelessWidget {
+  const StatisticsWidget1({super.key, 
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Expanded(
+      child: Card(
+        color: AppColours.darkBlue,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Row(children: [
+                Text(
+                title,
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: AppColours.almostWhite
+                  ),
+                ),
+                Icon(
+                  Icons.bar_chart,
+                  size: 50,
+                  color: AppColours.almostWhite,
+                ),
+                SizedBox(height: 6),
+              ],)
+            ],
+          ),
         ),
       ),
     );

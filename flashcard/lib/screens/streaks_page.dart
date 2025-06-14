@@ -244,7 +244,7 @@ class StreaksState extends State<Streaks> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Recent Activity",
-                            style: theme.textTheme.titleMedium!.copyWith(
+                            style: theme.textTheme.titleSmall!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppColours.almostWhite,
                             ),
