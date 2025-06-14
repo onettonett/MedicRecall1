@@ -65,6 +65,8 @@ class DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // This 'final localExamDate' avoids null safety issues & can be removed in versions >= Flutter 3.2 
+    final localExamDate = examDate; 
     return AppScaffold(
       title: "User Dashboard",
       body: Padding(
@@ -138,7 +140,6 @@ class DashboardState extends State<Dashboard> {
                   )
               ],),
               SizedBox(height: 14),
-
               Row(children: [
                 Expanded(
                   child: Card(
@@ -150,18 +151,23 @@ class DashboardState extends State<Dashboard> {
                         style: theme.textTheme.titleMedium!.copyWith(
                           color: AppColours.almostWhite),
                       ),
-                      SizedBox(height: 6),
+                      SizedBox(height: 2),
                       Row(children: [
-                        StatisticsWidget1(title: "Streak Count"),
-                        SizedBox(width: 6),
-                        StatisticsWidget1(title: "Total Hours Revised"),
-                        SizedBox(width: 6),
-                        StatisticsWidget1(title: "Exam Countdown"),
-                      ],)
-                    ],)
+                        StatisticsWidget1(title: "Streak Count", icon: Icons.local_fire_department, displayedValue: howManyDaysInARow),  
+                        SizedBox(width: 10),
+                        StatisticsWidget1(title: "Total Decks Revised", icon: Icons.access_alarm_sharp, displayedValue: numberOfDecksRevised),
+                        SizedBox(width: 10),
+                        StatisticsWidget1(
+                          title: "Exam Countdown", icon: Icons.calendar_today,
+                          displayedValue: localExamDate != null
+                          ? localExamDate.difference(DateTime.now()).inDays
+                          : -1
+                        ),
+                      ],
+                    )]
                     )
                   )
-                )
+                ))
               ],),
 
               /// ---DEPRECATED STREAKS CARD CODE ---
@@ -509,34 +515,53 @@ class DashboardBoxRight extends StatelessWidget {
 class StatisticsWidget1 extends StatelessWidget {
   const StatisticsWidget1({super.key, 
     required this.title,
+    required this.icon,
+    required this.displayedValue,
   });
 
   final String title;
+  final IconData icon;
+  final int displayedValue;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Expanded(
       child: Card(
-        color: AppColours.darkBlue,
+        color: Color.fromRGBO(44,44,44,1),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.fromLTRB(10,15,10,10),
           child: Column(
             children: [
-              Row(children: [
+              Column(children: [
+                SizedBox(height: 5),
                 Text(
-                title,
-                  style: theme.textTheme.titleMedium!.copyWith(
-                    color: AppColours.almostWhite
-                  ),
+                  title,
+                  textAlign: TextAlign.left,
+                    style: theme.textTheme.titleMedium!.copyWith(
+                      color: AppColours.almostWhite
+                    ),
                 ),
-                Icon(
-                  Icons.bar_chart,
-                  size: 50,
-                  color: AppColours.almostWhite,
-                ),
-                SizedBox(height: 6),
-              ],)
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                    "$displayedValue days",
+                      style: theme.textTheme.titleLarge!.copyWith(
+                        color: AppColours.almostWhite,
+                        fontWeight: FontWeight.w200,
+                        fontSize: 40
+                      )
+                    ),
+                    SizedBox(width: 20),
+                    Icon(
+                      icon,
+                      size: 70,
+                      color: AppColours.almostWhite,
+                    ),
+                ])
+              ])
             ],
           ),
         ),
