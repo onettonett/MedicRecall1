@@ -29,14 +29,6 @@ class Dashboard extends StatefulWidget {
   State<StatefulWidget> createState() => DashboardState();
 }
 
-// class Streaks extends StatefulWidget {
-//   const Streaks({super.key});
-
-//   @override
-//   State<Streaks> createState() => Streaks.StreaksState();
-// }
-
-
 class DashboardState extends State<Dashboard> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   late User user;
@@ -146,49 +138,114 @@ class DashboardState extends State<Dashboard> {
                         )
                     ],),
                     SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            color: AppColours.darkBlue,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
+
+                    Row(children: [
+                      Expanded(
+                        child: Card(
+                          color: AppColours.darkBlue,
+                          child: Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 20.0, vertical: 15.0),
+                          child: Column(children: [
+                            Text(
+                              "Statistics",
+                              style: theme.textTheme.titleMedium!.copyWith(
+                                color: AppColours.almostWhite),
+                            ),
+                            SizedBox(height: 6),
+                            Row(children: [
+                              Expanded(
+                                child: Card(
+                                color: AppColours.almostWhite,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
                                     child: Text(
-                                      "Streaks",
-                                      style: theme.textTheme.titleMedium!.copyWith(
-                                        color: AppColours.almostWhite,
+                                      "Streak Count $howManyDaysInARow",
+                                      style: theme.textTheme.bodyMedium!.copyWith(
+                                        color: AppColours.darkBlue,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: whichDaysRevised.isNotEmpty 
-                                      ? Row(
-                                          children: [
-                                            MiniStreakCard(date: todaysDate.day.toString(), isActive: whichDaysRevised[0]),
-                                            MiniStreakCard(date: todaysDate.subtract(Duration(days: 1)).day.toString(), isActive: whichDaysRevised[1]), 
-                                            MiniStreakCard(date: todaysDate.subtract(Duration(days: 2)).day.toString(), isActive: whichDaysRevised[2]),
-                                            MiniStreakCard(date: todaysDate.subtract(Duration(days: 3)).day.toString(), isActive: whichDaysRevised[3]), 
-                                            MiniStreakCard(date: todaysDate.subtract(Duration(days: 4)).day.toString(), isActive: whichDaysRevised[4]), 
-                                            MiniStreakCard(date: todaysDate.subtract(Duration(days: 5)).day.toString(), isActive: whichDaysRevised[5]),
-                                            MiniStreakCard(date: todaysDate.subtract(Duration(days: 6)).day.toString(), isActive: whichDaysRevised[6]),
-                                          ],
-                                        ) 
-                                      : Center(child: CircularProgressIndicator()),
-                                  ),
-                                ],
                               ),
-                            ),
-                          ),
-                        ),
-                        //SizedBox(width: MediaQuery.of(context).size.width / 2 - 14),
-                      ]
-                    ),
+                              ),
+                              SizedBox(width: 6),
+                              Expanded(
+                                child: Card(
+                                color: AppColours.almostWhite,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Text(
+                                      "Total Days Revised $howManyDaysInARow",
+                                      style: theme.textTheme.bodyMedium!.copyWith(
+                                        color: AppColours.darkBlue,
+                                      ),
+                                    ),
+                                  ),
+                              ),
+                              ),
+                              SizedBox(width: 6),
+                              Expanded(
+                                child: Card(
+                                color: AppColours.almostWhite,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Text(
+                                      "Exam Countdown $howManyDaysInARow",
+                                      style: theme.textTheme.bodyMedium!.copyWith(
+                                        color: AppColours.darkBlue,
+                                      ),
+                                    ),
+                                  ),
+                              ),
+                              )
+                            ],)
+                          ],)
+                          )
+                        )
+                      )
+                    ],),
+
+                    /// ---DEPRECATED STREAKS CARD CODE ---
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: Card(
+                    //         color: AppColours.darkBlue,
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                    //           child: Column(
+                    //             children: [
+                    //               Align(
+                    //                 alignment: Alignment.centerLeft,
+                    //                 child: Text(
+                    //                   "Streaks",
+                    //                   style: theme.textTheme.titleMedium!.copyWith(
+                    //                     color: AppColours.almostWhite,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //               const SizedBox(height: 10),
+                    //               SingleChildScrollView(
+                    //                 scrollDirection: Axis.horizontal,
+                    //                 child: whichDaysRevised.isNotEmpty 
+                    //                   ? Row(
+                    //                       children: [
+                    //                         MiniStreakCard(date: todaysDate.day.toString(), isActive: whichDaysRevised[0]),
+                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 1)).day.toString(), isActive: whichDaysRevised[1]), 
+                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 2)).day.toString(), isActive: whichDaysRevised[2]),
+                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 3)).day.toString(), isActive: whichDaysRevised[3]), 
+                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 4)).day.toString(), isActive: whichDaysRevised[4]), 
+                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 5)).day.toString(), isActive: whichDaysRevised[5]),
+                    //                         MiniStreakCard(date: todaysDate.subtract(Duration(days: 6)).day.toString(), isActive: whichDaysRevised[6]),
+                    //                       ],
+                    //                     ) 
+                    //                   : Center(child: CircularProgressIndicator()),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ]
+                    // ),
                     SizedBox(height: 14),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
