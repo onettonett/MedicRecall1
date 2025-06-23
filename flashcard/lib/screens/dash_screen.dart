@@ -7,7 +7,6 @@ import 'package:flashcard_x/screens/exam_declaration.dart';
 import 'package:flashcard_x/screens/explanation.dart';
 import 'package:flashcard_x/screens/faq.dart';
 import 'package:flashcard_x/screens/flashcard_editor_screen.dart';
-// import 'package:flashcard_x/screens/feedback_screen.dart';
 import 'package:flashcard_x/screens/sign_in_screen.dart';
 import 'package:flashcard_x/utils/firebase_wrapper.dart';
 import 'package:flashcard_x/utils/last_revised.dart';
@@ -17,7 +16,6 @@ import 'package:flashcard_x/widgets/app_bar_title.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-//import 'package:flashcard_x/screens/streaks_page.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Dashboard extends StatefulWidget {
@@ -153,12 +151,18 @@ class DashboardState extends State<Dashboard> {
                       ),
                       SizedBox(height: 2),
                       Row(children: [
-                        StatisticsWidget1(title: "Streak Count", icon: Icons.local_fire_department, displayedValue: howManyDaysInARow),  
+                        StatisticsWidget1(title: "Streak Count", iconFilePath: 'fire.png', displayedValue: howManyDaysInARow),
+                        // SvgPicture.asset(
+                        //   'assets/Calendar.svg',
+                        //   width: 100,
+                        //   height: 100,
+                        //   placeholderBuilder: (context) => CircularProgressIndicator(),
+                        // ),
                         SizedBox(width: 10),
-                        StatisticsWidget1(title: "Total Decks Revised", icon: Icons.access_alarm_sharp, displayedValue: numberOfDecksRevised),
+                        StatisticsWidget1(title: "Total Decks Revised", iconFilePath: 'clock.png', displayedValue: numberOfDecksRevised),
                         SizedBox(width: 10),
                         StatisticsWidget1(
-                          title: "Exam Countdown", icon: Icons.calendar_today,
+                          title: "Exam Countdown", iconFilePath: 'calendar.png',
                           displayedValue: localExamDate != null
                           ? localExamDate.difference(DateTime.now()).inDays
                           : -1
@@ -515,12 +519,12 @@ class DashboardBoxRight extends StatelessWidget {
 class StatisticsWidget1 extends StatelessWidget {
   const StatisticsWidget1({super.key, 
     required this.title,
-    required this.icon,
+    required this.iconFilePath,
     required this.displayedValue,
   });
 
   final String title;
-  final IconData icon;
+  final String iconFilePath;
   final int displayedValue;
 
   @override
@@ -555,10 +559,12 @@ class StatisticsWidget1 extends StatelessWidget {
                       )
                     ),
                     SizedBox(width: 20),
-                    Icon(
-                      icon,
-                      size: 70,
-                      color: AppColours.almostWhite,
+                    Container(
+                      height: 40,
+                      child: Image.asset(
+                        iconFilePath,
+                        //'trending_up.png',
+                      )
                     ),
                 ])
               ])
