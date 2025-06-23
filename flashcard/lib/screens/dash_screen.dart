@@ -151,7 +151,7 @@ class DashboardState extends State<Dashboard> {
                       ),
                       SizedBox(height: 2),
                       Row(children: [
-                        StatisticsWidget1(title: "Streak Count", iconFilePath: 'fire.png', displayedValue: howManyDaysInARow),
+                        StatisticsWidget(title: "Streak Count", iconFilePath: 'fire.png', iconHeight: 60, displayedValue: howManyDaysInARow),
                         // SvgPicture.asset(
                         //   'assets/Calendar.svg',
                         //   width: 100,
@@ -159,10 +159,10 @@ class DashboardState extends State<Dashboard> {
                         //   placeholderBuilder: (context) => CircularProgressIndicator(),
                         // ),
                         SizedBox(width: 10),
-                        StatisticsWidget1(title: "Total Decks Revised", iconFilePath: 'clock.png', displayedValue: numberOfDecksRevised),
+                        StatisticsWidget(title: "Total Decks Revised", iconFilePath: 'clock.png', iconHeight: 40, displayedValue: numberOfDecksRevised),
                         SizedBox(width: 10),
-                        StatisticsWidget1(
-                          title: "Exam Countdown", iconFilePath: 'calendar.png',
+                        StatisticsWidget(
+                          title: "Exam Countdown", iconFilePath: 'calendar.png', iconHeight: 50,
                           displayedValue: localExamDate != null
                           ? localExamDate.difference(DateTime.now()).inDays
                           : -1
@@ -516,16 +516,18 @@ class DashboardBoxRight extends StatelessWidget {
   }
 }
 
-class StatisticsWidget1 extends StatelessWidget {
-  const StatisticsWidget1({super.key, 
+class StatisticsWidget extends StatelessWidget {
+  const StatisticsWidget({super.key, 
     required this.title,
     required this.iconFilePath,
     required this.displayedValue,
+    required this.iconHeight,
   });
 
   final String title;
   final String iconFilePath;
   final int displayedValue;
+  final int iconHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -560,10 +562,9 @@ class StatisticsWidget1 extends StatelessWidget {
                     ),
                     SizedBox(width: 20),
                     Container(
-                      height: 40,
+                      height: iconHeight.toDouble(),
                       child: Image.asset(
                         iconFilePath,
-                        //'trending_up.png',
                       )
                     ),
                 ])
