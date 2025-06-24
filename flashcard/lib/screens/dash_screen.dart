@@ -152,19 +152,13 @@ class DashboardState extends State<Dashboard> {
                       SizedBox(height: 2),
                       Row(children: [
                         StatisticsWidget(title: "Streak Count", iconFilePath: 'fire.png', iconHeight: 60, displayedValue: howManyDaysInARow),
-                        // SvgPicture.asset(
-                        //   'assets/Calendar.svg',
-                        //   width: 100,
-                        //   height: 100,
-                        //   placeholderBuilder: (context) => CircularProgressIndicator(),
-                        // ),
                         SizedBox(width: 10),
-                        StatisticsWidget(title: "Total Decks Revised", iconFilePath: 'clock.png', iconHeight: 40, displayedValue: numberOfDecksRevised),
+                        StatisticsWidget(title: "Total Days Revised", iconFilePath: 'clock.png', iconHeight: 40, displayedValue: numberOfDecksRevised),
                         SizedBox(width: 10),
                         StatisticsWidget(
                           title: "Exam Countdown", iconFilePath: 'calendar.png', iconHeight: 50,
                           displayedValue: localExamDate != null
-                          ? localExamDate.difference(DateTime.now()).inDays
+                          ? (localExamDate.difference(DateTime.now()).inDays)
                           : -1
                         ),
                       ],
