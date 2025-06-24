@@ -118,8 +118,9 @@ class DashboardState extends State<Dashboard> {
               ),
               SizedBox(height: 20),
               Row(children: [
-                BottomButton(
+                BigButton(
                     label: 'Study Schedule',
+                    iconFilePath: 'assets/map.png',
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -127,8 +128,9 @@ class DashboardState extends State<Dashboard> {
                       );
                     },
                   ),
-                  BottomButton(
+                  BigButton(
                     label: 'Create New Flashcards',
+                    iconFilePath: 'assets/plus.png',
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -158,7 +160,9 @@ class DashboardState extends State<Dashboard> {
                         StatisticsWidget(
                           title: "Exam Countdown", iconFilePath: 'calendar.png', iconHeight: 50,
                           displayedValue: localExamDate != null
-                          ? (localExamDate.difference(DateTime.now()).inDays)
+                          ? (localExamDate.isAfter(todaysDate)
+                            ? localExamDate.difference(todaysDate).inDays
+                            : 0)
                           : -1
                         ),
                       ],
@@ -215,8 +219,9 @@ class DashboardState extends State<Dashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  BottomButton(
+                  BigButton(
                     label: 'How does the platform work?',
+                    iconFilePath: 'assets/map.png',
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -224,8 +229,9 @@ class DashboardState extends State<Dashboard> {
                       );
                     },
                   ),
-                  BottomButton(
+                  BigButton(
                     label: 'Frequently asked Questions',
+                    iconFilePath: 'assets/map.png',
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -233,8 +239,9 @@ class DashboardState extends State<Dashboard> {
                       );
                     },
                   ),
-                  BottomButton(
+                  BigButton(
                     label: 'Give us Feedback',
+                    iconFilePath: 'assets/map.png',
                     onPressed: () {
                       // Navigator.push(
                       //   context,
@@ -571,14 +578,16 @@ class StatisticsWidget extends StatelessWidget {
   }
 }
 
-class BottomButton extends StatelessWidget {
-  const BottomButton({super.key, 
+class BigButton extends StatelessWidget {
+  const BigButton({super.key, 
     required this.label,
     required this.onPressed,
+    required this.iconFilePath,
   });
 
   final String label;
   final Null Function() onPressed;
+  final String iconFilePath;
 
   @override
   Widget build(BuildContext context) {
@@ -598,16 +607,31 @@ class BottomButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
-                color: Colors.white
-            )
+          child: Row(
+            children: [
+              SizedBox(width: 15),
+              Image.asset(
+                width: 30,
+                iconFilePath,
+                //'assets/clock.png',
+              ),
+              //Container(
+                //alignment: Alignment.center,
+                Expanded(
+                  child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                        color: Colors.white
+                    )
+                  ),
+                ),
+             // )
+            ]
           ),
+          )
         ),
-      ),
-    );
+      );
   }
 }
 
