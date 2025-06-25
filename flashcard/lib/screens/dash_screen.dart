@@ -221,7 +221,7 @@ class DashboardState extends State<Dashboard> {
                 children: [
                   BigButton(
                     label: 'How does the platform work?',
-                    iconFilePath: 'assets/map.png',
+                    // iconFilePath: 'assets/map.png',
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -231,7 +231,7 @@ class DashboardState extends State<Dashboard> {
                   ),
                   BigButton(
                     label: 'Frequently asked Questions',
-                    iconFilePath: 'assets/map.png',
+                    // iconFilePath: 'assets/map.png',
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -241,7 +241,7 @@ class DashboardState extends State<Dashboard> {
                   ),
                   BigButton(
                     label: 'Give us Feedback',
-                    iconFilePath: 'assets/map.png',
+                    // iconFilePath: 'assets/map.png',
                     onPressed: () {
                       // Navigator.push(
                       //   context,
@@ -582,12 +582,12 @@ class BigButton extends StatelessWidget {
   const BigButton({super.key, 
     required this.label,
     required this.onPressed,
-    required this.iconFilePath,
+    this.iconFilePath,
   });
 
   final String label;
   final Null Function() onPressed;
-  final String iconFilePath;
+  final String? iconFilePath;
 
   @override
   Widget build(BuildContext context) {
@@ -610,23 +610,21 @@ class BigButton extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(width: 15),
-              Image.asset(
-                width: 30,
-                iconFilePath,
-                //'assets/clock.png',
-              ),
-              //Container(
-                //alignment: Alignment.center,
-                Expanded(
-                  child: Text(
-                  label,
-                  textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.white
-                    )
-                  ),
+              if (iconFilePath != null) ...[
+                Image.asset(
+                  width: 30,
+                  iconFilePath!,
                 ),
-             // )
+              ],
+              Expanded(
+                child: Text(
+                label,
+                textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white
+                  )
+                ),
+              ),
             ]
           ),
           )

@@ -34,7 +34,7 @@ class ScreenTitleBar extends StatelessWidget {
               }
             },
             icon: Icon(Icons.calendar_today, color: Colors.purple[700]),
-            label: Text('Set your exam date', style: theme.textTheme.bodyMedium!.copyWith(color: Colors.purple[700])),
+            label: Text('Create Your Study Schedule', style: theme.textTheme.bodyMedium!.copyWith(color: Colors.purple[700])),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.purple[50],
               padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
