@@ -104,7 +104,7 @@ class DashboardState extends State<Dashboard> {
               ),
               SizedBox(height: 20),
               Row(children: [
-                BigButton(
+                IconButton(
                     label: 'Study Schedule',
                     iconFilePath: 'assets/map.png',
                     onPressed: () {
@@ -114,7 +114,7 @@ class DashboardState extends State<Dashboard> {
                       );
                     },
                   ),
-                  BigButton(
+                  IconButton(
                     label: 'Create New Flashcards',
                     iconFilePath: 'assets/plus.png',
                     onPressed: () {
@@ -126,37 +126,54 @@ class DashboardState extends State<Dashboard> {
                   )
               ],),
               SizedBox(height: 14),
-              Row(children: [
-                Expanded(
-                  child: Card(
-                    color: AppColours.darkBlue,
-                    child: Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 20.0, vertical: 15.0),
-                    child: Column(children: [
-                      Text(
-                        "Statistics",
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          color: AppColours.almostWhite),
-                      ),
-                      SizedBox(height: 2),
-                      Row(children: [
-                        StatisticsWidget(title: "Streak Count", iconFilePath: 'fire.png', iconHeight: 60, displayedValue: howManyDaysInARow),
-                        SizedBox(width: 10),
-                        StatisticsWidget(title: "Total Days Revised", iconFilePath: 'clock.png', iconHeight: 40, displayedValue: numberOfDecksRevised),
-                        SizedBox(width: 10),
-                        StatisticsWidget(
-                          title: "Exam Countdown", iconFilePath: 'calendar.png', iconHeight: 50,
-                          displayedValue: localExamDate != null
-                          ? (localExamDate.isAfter(todaysDate)
-                            ? localExamDate.difference(todaysDate).inDays
-                            : 0)
-                          : -1
-                        ),
-                      ],
-                    )]
+              Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      color: AppColours.almostWhite,
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.symmetric(horizontal: 20.0, vertical: 15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Row(mainAxisAlignment: MainAxisAlignment.start,
+                            children:[
+                              SizedBox(width: 15),
+                              Image.asset(
+                                'assets/bar_chart.png',
+                                height: 18,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "Statistics",
+                                style: theme.textTheme.titleMedium!.copyWith(
+                                  color: Colors.black,
+                                )
+                              ),
+                            ]),
+
+                          SizedBox(height: 2),
+                          Row(children: [
+                            StatisticsWidget(title: "Streak Count", iconFilePath: 'fire.png', iconHeight: 55, displayedValue: howManyDaysInARow),
+                            SizedBox(width: 10),
+                            StatisticsWidget(title: "Total Days Revised", iconFilePath: 'clock.png', iconHeight: 40, displayedValue: numberOfDecksRevised),
+                            SizedBox(width: 10),
+                            StatisticsWidget(
+                              title: "Exam Countdown", iconFilePath: 'calendar.png', iconHeight: 45,
+                              displayedValue: localExamDate != null
+                              ? (localExamDate.isAfter(todaysDate)
+                                ? localExamDate.difference(todaysDate).inDays
+                                : 0)
+                              : -1
+                            ),
+                          ]),
+                        ])
+                      )
                     )
                   )
-                ))
-              ],),
+                ]
+              ),
 
               /// ---DEPRECATED STREAKS CARD CODE ---
               // Row(
@@ -205,7 +222,7 @@ class DashboardState extends State<Dashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  BigButton(
+                  IconButton(
                     label: 'How does MedicRecall work?',
                     // iconFilePath: 'assets/map.png',
                     onPressed: () {
@@ -215,7 +232,7 @@ class DashboardState extends State<Dashboard> {
                       );
                     },
                   ),
-                  BigButton(
+                  IconButton(
                     label: 'Frequently asked Questions',
                     // iconFilePath: 'assets/map.png',
                     onPressed: () {
@@ -225,7 +242,7 @@ class DashboardState extends State<Dashboard> {
                       );
                     },
                   ),
-                  BigButton(
+                  IconButton(
                     label: 'Give us Feedback',
                     // iconFilePath: 'assets/map.png',
                     onPressed: () {
@@ -386,7 +403,7 @@ class DashboardBoxLeft extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
                 child: Row(
                   children: [
-                    BigButton(
+                    IconButton(
                       label: 'Flashcard Tutor',
                       iconFilePath: 'assets/trending_up.png',
                       onPressed: () {
@@ -479,23 +496,23 @@ class DashboardBoxRight extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
                 child: Row(
                   children: [
-                    BigButton(
-                      label: 'Flashcard Tutor',
-                      iconFilePath: 'assets/trending_up.png',
+                    IconButton(
+                      label: 'Full-Sized Mock',
+                      iconFilePath: 'assets/play_circle.png',
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
+                          MoveRightRoute(page: const HomePage(title: "Exam Declaration")),
                         );
                       },
                     ),
-                    BigButton(
-                      label: 'Flashcard Tutor',
-                      iconFilePath: 'assets/trending_up.png',
+                    IconButton(
+                      label: 'Mini Mock',
+                      iconFilePath: 'assets/target.png',
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
+                          MoveRightRoute(page: const HomePage(title: "Exam Declaration")),
                         );
                       },
                     ),
@@ -568,7 +585,7 @@ class StatisticsWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return Expanded(
       child: Card(
-        color: Color.fromRGBO(44,44,44,1),
+        color: Color.fromRGBO(0,0,0,1),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10,15,10,10),
           child: Column(
@@ -611,8 +628,8 @@ class StatisticsWidget extends StatelessWidget {
   }
 }
 
-class BigButton extends StatelessWidget {
-  const BigButton({super.key, 
+class IconButton extends StatelessWidget {
+  const IconButton({super.key, 
     required this.label,
     required this.onPressed,
     this.iconFilePath,
@@ -633,7 +650,6 @@ class BigButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            //foregroundColor: Colors.white,
             backgroundColor: themeProvider.isDarkMode ? Colors.black : Color.fromRGBO(44, 44, 44, 1),
             padding: EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
@@ -650,63 +666,6 @@ class BigButton extends StatelessWidget {
                 ),
               ],
               Expanded(
-                child: Text(
-                label,
-                textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                      color: Colors.white
-                  )
-                ),
-              ),
-            ]
-          ),
-          )
-        ),
-      );
-  }
-}
-
-class TopBigButton extends StatelessWidget {
-  const TopBigButton({super.key, 
-    required this.label,
-    required this.onPressed,
-    this.iconFilePath,
-  });
-
-  final String label;
-  final Null Function() onPressed;
-  final String? iconFilePath;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: themeProvider.isDarkMode ? Colors.black : Color.fromRGBO(44, 44, 44, 1),
-            padding: EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-            ),
-          ),
-          child: Row(
-            children: [
-              SizedBox(width: 15),
-              if (iconFilePath != null) ...[
-                Image.asset(
-                  width: 30,
-                  iconFilePath!,
-                ),
-              ],
-              SizedBox(
                 child: Text(
                 label,
                 textAlign: TextAlign.center,
