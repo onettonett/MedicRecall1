@@ -76,13 +76,13 @@ class DashboardState extends State<Dashboard> {
             children: [
               SizedBox(height: 20),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: DashboardBoxLeft(
-                      title: 'Flashcard Tutor',
-                      //subtitle: "Next topic for review: ${nextTopicForReview}",
+                      title: 'Next Flashcard Deck for review:',
                       subtitle: nextTopicForReview != null
-                          ? "Next topic for review: ${nextTopicForReview}"
+                          ? "$nextTopicForReview"
                           : "No topics scheduled.",
                       buttonText: 'Start Now',
                       onPressed: () {
@@ -97,21 +97,7 @@ class DashboardState extends State<Dashboard> {
                   Expanded(
                     child: DashboardBoxRight(
                       title: 'Next Mock Exam:',
-                      button1Text: 'Full-Sized Mock',
-                      button2Text: 'Mini Mocks',
                       subtitle: 'Official Paper 1',
-                      on1Pressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ExamDeclaration())
-                        );
-                      },
-                      on2Pressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ExamDeclaration())
-                        );
-                      },
                     ),
                   ),
                 ],
@@ -220,7 +206,7 @@ class DashboardState extends State<Dashboard> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   BigButton(
-                    label: 'How does the platform work?',
+                    label: 'How does MedicRecall work?',
                     // iconFilePath: 'assets/map.png',
                     onPressed: () {
                       Navigator.push(
@@ -385,67 +371,90 @@ class DashboardBoxLeft extends StatelessWidget {
     final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    return SizedBox(
-      height: height ?? 160,
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: themeProvider.isDarkMode ? Colors.blueGrey : Colors.blue[50],
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                  color: themeProvider.isDarkMode ? Colors.white : Colors.black
-              ),
-            ),
-            SizedBox(height: 10),
-            subtitle == null ? CircularProgressIndicator(color: themeProvider.isDarkMode ? Colors.white : Colors.black) : Text(
-              subtitle!,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                  color: themeProvider.isDarkMode ? Colors.white : Colors.black
-              ),
-            ),
-            Spacer(),
-            ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: themeProvider.isDarkMode ? Colors.black54 : Color.fromRGBO(44, 44, 44, 1),
-              ),
-              child: Text(
-                buttonText,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white
+    return Column(
+      children: [
+        Container(
+          height: 150,
+          decoration: BoxDecoration(
+            color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: 4.0),
+              Container(
+                padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
+                child: Row(
+                  children: [
+                    BigButton(
+                      label: 'Flashcard Tutor',
+                      iconFilePath: 'assets/trending_up.png',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
+                        );
+                      },
+                    ),
+                  ]
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Container(
+                  height: 80,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:[
+                            SizedBox(height: 5),
+                            Text(
+                              title,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                  color: themeProvider.isDarkMode ? Colors.black : Colors.white,
+                              ),
+                            ),
+                            Text(
+                              subtitle!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: themeProvider.isDarkMode ? Colors.black : Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                        ]),
+                      ),
+                    ])
+                ),
+              ),
+            ]
+          ),
+        )
+      ]
+
+
     );
-  }
 }
 
+}
 class DashboardBoxRight extends StatelessWidget {
   const DashboardBoxRight({super.key, 
     required this.title,
-    required this.button1Text,
-    required this.button2Text,
-    required this.on1Pressed,
-    required this.on2Pressed,
     this.subtitle,
     this.height,
   });
 
   final String title;
-  final String button1Text;
-  final String button2Text;
-  final Null Function() on1Pressed;
-  final Null Function() on2Pressed;
   final String? subtitle;
   final double? height;
 
@@ -454,65 +463,89 @@ class DashboardBoxRight extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+  
+    return Column(
+      children: [
+        Container(
+          height: 150,
+          decoration: BoxDecoration(
+            color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: 4.0),
+              Container(
+                padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
+                child: Row(
+                  children: [
+                    BigButton(
+                      label: 'Flashcard Tutor',
+                      iconFilePath: 'assets/trending_up.png',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
+                        );
+                      },
+                    ),
+                    BigButton(
+                      label: 'Flashcard Tutor',
+                      iconFilePath: 'assets/trending_up.png',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MoveRightRoute(page: const HomePage(title: "Flashcard Tutor")),
+                        );
+                      },
+                    ),
+                  ]
+                ),
+              ),
 
-    return SizedBox(
-      height: height ?? 160,
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: themeProvider.isDarkMode ? Colors.blueGrey : Colors.blue[50],
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              ElevatedButton(
-               onPressed: on1Pressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: themeProvider.isDarkMode ? Colors.black54 : Color.fromRGBO(44, 44, 44, 1),
-              ),
-              child: Text(
-                button1Text,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Container(
+                  height: 80,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:[
+                            SizedBox(height: 5),
+                            Text(
+                              title,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                  color: themeProvider.isDarkMode ? Colors.black : Colors.white)
+                            ),
+                            subtitle == null ? CircularProgressIndicator(color: themeProvider.isDarkMode ? Colors.black : Colors.white) : 
+                            Text(
+                              subtitle!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: themeProvider.isDarkMode ? Colors.black : Colors.white,
+                              )
+                            ),
+                            SizedBox(height: 5),
+                        ]),
+                      ),
+                    ])
                 ),
               ),
-            ),
-            SizedBox(width: 10),
-            ElevatedButton(
-              onPressed: on2Pressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: themeProvider.isDarkMode ? Colors.black54 : Color.fromRGBO(44, 44, 44, 1),
-              ),
-              child: Text(
-                button2Text,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white
-                ),
-              ),
-            ),
-            ],),
-            SizedBox(height: 20),
-            Text(
-              title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                  color: themeProvider.isDarkMode ? Colors.white : Colors.black
-              ),
-            ),
-            SizedBox(height: 10),
-            subtitle == null ? CircularProgressIndicator(color: themeProvider.isDarkMode ? Colors.white : Colors.black) : Text(
-              subtitle!,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                  color: themeProvider.isDarkMode ? Colors.white : Colors.black
-              ),
-            ),
-            Spacer(),
-          ],
-        ),
-      ),
+            ]
+          ),
+        )
+      ]
+
+
     );
   }
 }
@@ -596,12 +629,12 @@ class BigButton extends StatelessWidget {
 
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: themeProvider.isDarkMode ? Colors.black54 : Color.fromRGBO(44, 44, 44, 1),
+            //foregroundColor: Colors.white,
+            backgroundColor: themeProvider.isDarkMode ? Colors.black : Color.fromRGBO(44, 44, 44, 1),
             padding: EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -617,6 +650,63 @@ class BigButton extends StatelessWidget {
                 ),
               ],
               Expanded(
+                child: Text(
+                label,
+                textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white
+                  )
+                ),
+              ),
+            ]
+          ),
+          )
+        ),
+      );
+  }
+}
+
+class TopBigButton extends StatelessWidget {
+  const TopBigButton({super.key, 
+    required this.label,
+    required this.onPressed,
+    this.iconFilePath,
+  });
+
+  final String label;
+  final Null Function() onPressed;
+  final String? iconFilePath;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: themeProvider.isDarkMode ? Colors.black : Color.fromRGBO(44, 44, 44, 1),
+            padding: EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+            ),
+          ),
+          child: Row(
+            children: [
+              SizedBox(width: 15),
+              if (iconFilePath != null) ...[
+                Image.asset(
+                  width: 30,
+                  iconFilePath!,
+                ),
+              ],
+              SizedBox(
                 child: Text(
                 label,
                 textAlign: TextAlign.center,
